@@ -17,6 +17,39 @@ final class Build
         $this->api = $api;
     }
 
+    public function listAll(array $queryParameters): array
+    {
+        $response = $this->api->get('builds', ['query' => $queryParameters]);
+
+        return $this->api->getResponseBody($response);
+    }
+
+    public function getByOrganization(string $organizationSlug, array $queryParameters): array
+    {
+        $response = $this->api->get(
+            sprintf('organizations/%s/builds', $organizationSlug),
+            ['query' => $queryParameters]
+        );
+
+        return $this->api->getResponseBody($response);
+    }
+
+    public function getBySlug(string $organizationSlug, string $pipelineSlug, array $queryParameters): array
+    {
+        $uri = sprintf('organizations/%s/pipelines/%s/builds', $organizationSlug, $pipelineSlug);
+        $response = $this->api->get($uri, ['query' => $queryParameters]);
+
+        return $this->api->getResponseBody($response);
+    }
+
+    public function get(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
+    {
+        $uri = sprintf('organizations/%s/pipelines/%s/builds/%d', $organizationSlug, $pipelineSlug, $buildNumber);
+        $response = $this->api->get($uri);
+
+        return $this->api->getResponseBody($response);
+    }
+
     public function retry(
         string $organizationSlug,
         string $pipelineSlug,
