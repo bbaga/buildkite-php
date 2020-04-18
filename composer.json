@@ -4,7 +4,10 @@
         "guzzlehttp/guzzle": "^6.5"
     },
     "autoload": {
-        "psr-4": {"BuildkiteApiPhp\\": "src/"}
+        "psr-4": {"BuildkiteApi\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"BuildkiteApi\\Tests\\": "tests/"}
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5"

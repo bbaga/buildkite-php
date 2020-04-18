@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApiPhp\Api\Rest;
+namespace BuildkiteApi\Api\Rest;
 
-use BuildkiteApiPhp\Api\RestApi;
+use BuildkiteApi\Api\RestApi;
 
 final class Organization
 {

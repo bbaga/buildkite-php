@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApiPhp\Api;
+namespace BuildkiteApi\Api;
 
-use BuildkiteApiPhp\Api\Rest\Annotation;
-use BuildkiteApiPhp\Api\Rest\Artifact;
-use BuildkiteApiPhp\Api\Rest\Build;
-use BuildkiteApiPhp\Api\Rest\Emoji;
-use BuildkiteApiPhp\Api\Rest\Job;
-use BuildkiteApiPhp\Api\Rest\Organization;
-use BuildkiteApiPhp\Api\Rest\Pipeline;
-use BuildkiteApiPhp\Api\Rest\User;
+use BuildkiteApi\Api\Rest\Annotation;
+use BuildkiteApi\Api\Rest\Artifact;
+use BuildkiteApi\Api\Rest\Build;
+use BuildkiteApi\Api\Rest\Emoji;
+use BuildkiteApi\Api\Rest\Job;
+use BuildkiteApi\Api\Rest\Organization;
+use BuildkiteApi\Api\Rest\Pipeline;
+use BuildkiteApi\Api\Rest\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
