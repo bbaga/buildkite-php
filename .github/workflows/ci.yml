@@ -6,11 +6,15 @@ jobs:
   build:
     name: Continous Integration
     # This job runs on Linux
-    runs-on: ubuntu-latest
+    rruns-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-18.04]
+          php: [7.2, 7.4]
     steps:
       - uses: actions/checkout@v2
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/hello-world-javascript-action
       - name: PHPUnit
         run: |
-          docker run --rm -v /home/runner/work/buildkite-php/buildkite-php:/app -w /app composer:1.10 composer install
-          docker run --rm -v /home/runner/work/buildkite-php/buildkite-php:/app -w /app php:7.2.30-alpine vendor/bin/phpunit
+          composer install
+          vendor/bin/phpunit
