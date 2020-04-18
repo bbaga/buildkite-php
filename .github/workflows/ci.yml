@@ -13,10 +13,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: "Install PHP with extensions"
-          uses: "shivammathur/setup-php@v1"
-          with:
-            php-version: "7.4"
-            coverage: "pcov"
+        uses: "shivammathur/setup-php@v1"
+        with:
+          php-version: "7.4"
+          coverage: "pcov"
 
       - name: Installing dependencies
         run: composer install
