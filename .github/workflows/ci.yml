@@ -17,4 +17,4 @@ jobs:
       - name: PHPUnit
         run: |
           composer install
-          vendor/bin/phpunit
+          vendor/bin/phpunit --testsuite unit
