@@ -22,7 +22,7 @@ jobs:
         run: composer install
 
       - name: "Run vimeo/psalm"
-        run: "./tools/psalm --config=.psalm/config.xml --no-progress --shepherd --show-info=false --stats"
+        run: "vendor/bin/psalm --no-progress --shepherd --show-info=false --stats"
 
   phpunit:
     name: PHPUnit
