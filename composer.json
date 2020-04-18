@@ -1,15 +1,33 @@
 {
-    "require": {
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.5"
-    },
-    "autoload": {
-        "psr-4": {"BuildkiteApi\\": "src/"}
-    },
-    "autoload-dev": {
-        "psr-4": {"BuildkiteApi\\Tests\\": "tests/"}
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.5"
+  "name": "bbaga/buildkite-php",
+  "type": "library",
+  "description": "PHP client library for consuming the Buildkite API",
+  "keywords": [
+    "php",
+    "buildkite"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bela Bagameri"
     }
+  ],
+  "require": {
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "BuildkiteApi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BuildkiteApi\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5",
+    "vimeo/psalm": "^3.11"
+  }
 }

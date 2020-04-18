@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use function is_array;
 
 final class RestApi
 {
@@ -36,8 +37,8 @@ final class RestApi
 
     /**
      * @param Client $client
-     * @param string $accessToken
-     * @param string $uri
+     * @param string $accessToken Buildkite API Access Token
+     * @param string $uri Buildkite API uri
      */
     public function __construct(Client $client, string $accessToken, string $uri = 'https://api.buildkite.com/v2/')
     {
@@ -49,10 +50,26 @@ final class RestApi
     public function getResponseBody(ResponseInterface $response, callable $customHandler = null): array
     {
         if ($customHandler !== null) {
-            return $customHandler($response);
+            /** @var mixed $data */
+            $data = $customHandler($response);
+
+            if (!is_array($data)) {
+                throw new \RuntimeException('Return type of custom response handler must be array');
+            }
+
+            return $data;
         }
 
-        return json_decode($response->getBody(), true);
+        /** @var mixed $data */
+        $data = json_decode((string) $response->getBody(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException(json_last_error_msg());
+        }
+
+        $data = is_array($data) ? $data : [$data];
+
+        return $data;
     }
 
     public function get(string $resource, array $options = []): ResponseInterface

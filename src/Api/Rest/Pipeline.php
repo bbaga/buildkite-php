@@ -48,7 +48,7 @@ final class Pipeline
         return $this->api->getResponseBody($response);
     }
 
-    public function delete(string $organizationSlug, string $pipelineSlug)
+    public function delete(string $organizationSlug, string $pipelineSlug): void
     {
         $uri = sprintf('organizations/%s/pipelines/%s', $organizationSlug, $pipelineSlug);
         $this->api->delete($uri);
