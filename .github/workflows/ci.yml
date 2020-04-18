@@ -12,5 +12,5 @@ jobs:
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/hello-world-javascript-action
       - name: PHPUnit
         run: |
-          docker run --rm composer:1.10 composer install
-          docker run --rm php:7.2.30-alpine vendor/bin/phpunit
+          docker run --rm -v /home/runner/work/buildkite-php/buildkite-php:/app -w /app composer:1.10 composer install
+          docker run --rm -v /home/runner/work/buildkite-php/buildkite-php:/app -w /app php:7.2.30-alpine vendor/bin/phpunit
