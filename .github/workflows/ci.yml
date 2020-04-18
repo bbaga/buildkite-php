@@ -1,7 +1,6 @@
 name: Continous Integration
 
 on:
-  - "pull_request"
   - "push"
 
 jobs:
