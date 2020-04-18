@@ -1,3 +1,3 @@
 # PHP client library for consuming the Buildkite API
 
-Work in progress
+![](https://github.com/bbaga/buildkite-php/workflows/Continous%20Integration/badge.svg)
