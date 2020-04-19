@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Unit\Api\Rest;
+namespace BuildkiteApi\Tests\Unit\Api;
 
 use BuildkiteApi\Api\RestApi;
 use GuzzleHttp\Client;
