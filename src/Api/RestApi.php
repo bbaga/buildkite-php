@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace BuildkiteApi\Api;
 
+use BuildkiteApi\Api\Rest\Agent;
 use BuildkiteApi\Api\Rest\Annotation;
 use BuildkiteApi\Api\Rest\Artifact;
 use BuildkiteApi\Api\Rest\Build;
@@ -165,5 +166,10 @@ final class RestApi
     public function job(): Job
     {
         return new Job($this);
+    }
+
+    public function agent(): Agent
+    {
+        return new Agent($this);
     }
 }

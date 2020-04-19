@@ -3,7 +3,7 @@
 ![](https://github.com/bbaga/buildkite-php/workflows/Continous%20Integration/badge.svg)
 ![](https://shepherd.dev/github/bbaga/buildkite-php/coverage.svg)
 
-Proper documentation is coming soon.
+**Documentations is work in progress.**
 
 ## Usage
 
@@ -25,6 +25,12 @@ Proper documentation is coming soon.
   * [Create new build](#create-a-new-build)
   * [Cancel a running build](#cancel-a-running-build)
   * [Restarting a build](#restarting-a-build)
+* [Jobs API](#jobs-api)
+* [Artifacts API](#artifacts-api)
+* [Agents API](#agents-api)
+* [Annotations API](#annotations-api)
+* [Users API](#users-api)
+* [Emojis API](#emojis-api)
 
 ### Setting up the RestApi object
 ```php
@@ -163,3 +169,39 @@ $api->build()->cancel('my-organization', 'my-pipeline', $buildNumber);
 $buildNumber = 12;
 $api->build()->rebuild('my-organization', 'my-pipeline', $buildNumber);
 ```
+
+### Jobs API
+
+Jobs related methods are exposed via `$api->job()`
+
+Detailed documentation for the Jobs API is available [here](https://buildkite.com/docs/apis/rest-api/jobs)
+
+### Artifacts API
+
+Jobs related methods are exposed via `$api->artifact()`
+
+Detailed documentation for the Artifacts API is available [here](https://buildkite.com/docs/apis/rest-api/artifacts)
+
+### Agents API
+
+Agents related methods are exposed via `$api->agent()`
+
+Detailed documentation for the Artifacts API is available [here](https://buildkite.com/docs/apis/rest-api/agents)
+
+### Annotations API
+
+Annotations related methods are exposed via `$api->annotation()`
+
+Detailed documentation for the Annotations API is available [here](https://buildkite.com/docs/apis/rest-api/annotations)
+
+### Users API
+
+Users related methods are exposed via `$api->user()`
+
+Detailed documentation for the Users API is available [here](https://buildkite.com/docs/apis/rest-api/users)
+
+### Emojis API
+
+Emojis related methods are exposed via `$api->emoji()`
+
+Detailed documentation for the Users API is available [here](https://buildkite.com/docs/apis/rest-api/emojis)
