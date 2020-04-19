@@ -34,7 +34,7 @@ final class Build
         return $this->api->getResponseBody($response);
     }
 
-    public function getBySlug(string $organizationSlug, string $pipelineSlug, array $queryParameters): array
+    public function getByPipeline(string $organizationSlug, string $pipelineSlug, array $queryParameters): array
     {
         $uri = sprintf('organizations/%s/pipelines/%s/builds', $organizationSlug, $pipelineSlug);
         $response = $this->api->get($uri, ['query' => $queryParameters]);
@@ -50,91 +50,37 @@ final class Build
         return $this->api->getResponseBody($response);
     }
 
-    public function retry(
-        string $organizationSlug,
-        string $pipelineSlug,
-        int $buildNumber,
-        string $jobId
-    ): array {
+    public function create(string $organizationSlug, string $pipelineSlug, array $body): array
+    {
+        $uri = sprintf('organizations/%s/pipelines/%s/builds', $organizationSlug, $pipelineSlug);
+        $response = $this->api->post($uri, $body);
+
+        return $this->api->getResponseBody($response);
+    }
+
+    public function cancel(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
+    {
         $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/retry',
+            'organizations/%s/pipelines/%s/builds/%d/cancel',
             $organizationSlug,
             $pipelineSlug,
-            $buildNumber,
-            $jobId
+            $buildNumber
         );
         $response = $this->api->put($uri);
 
         return $this->api->getResponseBody($response);
     }
 
-    public function unlock(
-        string $organizationSlug,
-        string $pipelineSlug,
-        int $buildNumber,
-        string $jobId
-    ): array {
+    public function rebuild(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
+    {
         $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/unlock',
+            'organizations/%s/pipelines/%s/builds/%d/rebuild',
             $organizationSlug,
             $pipelineSlug,
-            $buildNumber,
-            $jobId
+            $buildNumber
         );
         $response = $this->api->put($uri);
 
         return $this->api->getResponseBody($response);
-    }
-
-    public function getLogOutput(
-        string $organizationSlug,
-        string $pipelineSlug,
-        int $buildNumber,
-        string $jobId
-    ): array {
-        $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/log',
-            $organizationSlug,
-            $pipelineSlug,
-            $buildNumber,
-            $jobId
-        );
-        $response = $this->api->get($uri);
-
-        return $this->api->getResponseBody($response);
-    }
-
-    public function getEnvironmentVariables(
-        string $organizationSlug,
-        string $pipelineSlug,
-        int $buildNumber,
-        string $jobId
-    ): array {
-        $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/env',
-            $organizationSlug,
-            $pipelineSlug,
-            $buildNumber,
-            $jobId
-        );
-        $response = $this->api->get($uri);
-
-        return $this->api->getResponseBody($response);
-    }
-
-    public function delete(
-        string $organizationSlug,
-        string $pipelineSlug,
-        int $buildNumber,
-        string $jobId
-    ): void {
-        $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/log',
-            $organizationSlug,
-            $pipelineSlug,
-            $buildNumber,
-            $jobId
-        );
-        $response = $this->api->delete($uri);
     }
 }
