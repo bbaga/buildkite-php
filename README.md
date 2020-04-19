@@ -186,7 +186,7 @@ Detailed documentation for the Artifacts API is available [here](https://buildki
 
 Agents related methods are exposed via `$api->agent()`
 
-Detailed documentation for the Artifacts API is available [here](https://buildkite.com/docs/apis/rest-api/agents)
+Detailed documentation for the Agents API is available [here](https://buildkite.com/docs/apis/rest-api/agents)
 
 ### Annotations API
 
