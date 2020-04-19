@@ -23,8 +23,8 @@ jobs:
       - name: "Run vimeo/psalm"
         run: "vendor/bin/psalm --no-progress --shepherd --show-info=false --stats"
 
-  phpunit:
-    name: PHPUnit
+  phpunit-integration:
+    name: PHPUnit - Integration
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -41,5 +41,6 @@ jobs:
       - name: Running integration tests
         env:
           BK_TEST_TOKEN: ${{ secrets.BK_TEST_TOKEN }}
+          BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
         run: vendor/bin/phpunit --testsuite integration
 

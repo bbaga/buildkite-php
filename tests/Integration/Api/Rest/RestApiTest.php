@@ -31,8 +31,8 @@ final class Organization extends TestCase
 
     public function testGet(): void
     {
-        $organizations = $this->api->organization()->get('bbaga-buildkite-php');
+        $organizations = $this->api->organization()->get(getenv('BK_TEST_ORG'));
 
-        $this->assertCount(1, $organizations);
+        $this->assertNotEmpty($organizations);
     }
 }
