@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
 final class UserTest extends AbstractTestCase
 {
@@ -14,7 +14,6 @@ final class UserTest extends AbstractTestCase
     public function testWhoAmI(): void
     {
         $iam = $this->api->user()->whoami();
-        $this->assertIsArray($iam);
         $this->assertArrayHasKey('id', $iam);
         $this->assertArrayHasKey('name', $iam);
         $this->assertArrayHasKey('email', $iam);

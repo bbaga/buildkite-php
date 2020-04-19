@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
-use BuildkiteApi\Api\RestApi;
-use GuzzleHttp\Client;
+use bbaga\BuildkiteApi\Api\GuzzleClient;
+use bbaga\BuildkiteApi\Api\RestApi;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
@@ -28,10 +28,10 @@ abstract class AbstractTestCase extends TestCase
     {
         parent::setUp();
 
-        $token = getenv('BK_TEST_TOKEN');
-        $this->prefix = getenv('BK_TEST_PREFIX');
-        $this->organization = getenv('BK_TEST_ORG');
-        $this->api = new RestApi(new Client(), $token);
+        $token = (string) getenv('BK_TEST_TOKEN');
+        $this->prefix = (string) getenv('BK_TEST_PREFIX');
+        $this->organization = (string) getenv('BK_TEST_ORG');
+        $this->api = new RestApi(new GuzzleClient(), $token);
     }
 
     protected function slugify(string $name): string

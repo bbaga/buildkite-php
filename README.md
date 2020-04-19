@@ -5,6 +5,11 @@
 
 **Documentations is work in progress.**
 
+## Installation
+```shell script
+composer require bbaga/buildkite-php
+```
+
 ## Usage
 
 [Direct API calls](#direct-api-calls)
@@ -35,13 +40,16 @@
 ### Setting up the RestApi object
 ```php
 use BuildkiteApi\Api\RestApi;
-use GuzzleHttp\Client;
 
 require __DIR__.'/vendor/autoload.php';
 
-$client = new Client();
-$api = new RestApi($client, MY_BUILDKITE_API_TOKEN');
+/** @var \BuildkiteApi\Api\HttpClientInterface */
+$client = new MyHttpClient(); 
+
+$api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
+
+`\BuildkiteApi\Api\HttpClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
 
 ### Direct API calls
 
@@ -205,3 +213,35 @@ Detailed documentation for the Users API is available [here](https://buildkite.c
 Emojis related methods are exposed via `$api->emoji()`
 
 Detailed documentation for the Users API is available [here](https://buildkite.com/docs/apis/rest-api/emojis)
+
+## Contribution
+
+### Testing
+
+```shell script
+make test
+```
+
+### Integration testing
+A Buildkite account is required for integration testing and the following environment variables must be set.
+
+* `BK_TEST_TOKEN`
+* `BK_TEST_ORG`
+* `BK_TEST_PREFIX`
+* `GITHUB_REF`
+
+These can be set in the `phpunit.xml` by making a copy of `phpunit.xml.dist` and extending it with the following snippet
+```xml
+    <php>
+        <env name="BK_TEST_TOKEN" value="my-buildkite-api-token"/>
+        <env name="BK_TEST_ORG" value="my-organization-slug"/>
+        <env name="BK_TEST_PREFIX" value="something-uniqe"/>
+        <env name="GITHUB_REF" value="refs/heads/master"/>
+    </php>
+```
+
+Once the environment variables are set the test suite can be started
+
+```shell script
+make integration
+```

@@ -1,28 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Api;
+namespace bbaga\BuildkiteApi\Api;
 
-use BuildkiteApi\Api\Rest\Agent;
-use BuildkiteApi\Api\Rest\Annotation;
-use BuildkiteApi\Api\Rest\Artifact;
-use BuildkiteApi\Api\Rest\Build;
-use BuildkiteApi\Api\Rest\Job;
-use BuildkiteApi\Api\Rest\Emoji;
-use BuildkiteApi\Api\Rest\Organization;
-use BuildkiteApi\Api\Rest\Pipeline;
-use BuildkiteApi\Api\Rest\User;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use bbaga\BuildkiteApi\Api\Rest\Agent;
+use bbaga\BuildkiteApi\Api\Rest\Annotation;
+use bbaga\BuildkiteApi\Api\Rest\Artifact;
+use bbaga\BuildkiteApi\Api\Rest\Build;
+use bbaga\BuildkiteApi\Api\Rest\Job;
+use bbaga\BuildkiteApi\Api\Rest\Emoji;
+use bbaga\BuildkiteApi\Api\Rest\Organization;
+use bbaga\BuildkiteApi\Api\Rest\Pipeline;
+use bbaga\BuildkiteApi\Api\Rest\User;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use function GuzzleHttp\Psr7\stream_for;
 use function is_array;
 
 final class RestApi
 {
 
     /**
-     * @var Client
+     * @var HttpClientInterface
      */
     private $client;
 
@@ -36,12 +35,14 @@ final class RestApi
      */
     private $uri;
 
+    const BASE_URI = 'https://api.buildkite.com/v2/';
+
     /**
-     * @param Client $client
+     * @param HttpClientInterface $client
      * @param string $accessToken Buildkite API Access Token
      * @param string $uri Buildkite API uri
      */
-    public function __construct(Client $client, string $accessToken, string $uri = 'https://api.buildkite.com/v2/')
+    public function __construct(HttpClientInterface $client, string $accessToken, string $uri = self::BASE_URI)
     {
         $this->client = $client;
         $this->accessToken = $accessToken;
@@ -75,7 +76,7 @@ final class RestApi
 
     public function get(string $resource, array $options = []): ResponseInterface
     {
-        $request = new Request('GET', sprintf('%s%s', $this->uri, $resource));
+        $request = $this->client->createRequest('GET', sprintf('%s%s', $this->uri, $resource));
 
         return $this->client->send($this->addAuthorizationHeader($request), $options);
     }
@@ -87,43 +88,31 @@ final class RestApi
 
     public function post(string $resource, array $body = []): ResponseInterface
     {
-        $request = new Request(
-            'POST',
-            sprintf('%s%s', $this->uri, $resource),
-            [],
-            json_encode($body)
-        );
+        $request = $this->client->createRequest('POST', sprintf('%s%s', $this->uri, $resource))
+            ->withBody(stream_for(json_encode($body)));
 
         return $this->client->send($this->addAuthorizationHeader($request));
     }
 
     public function patch(string $resource, array $body = []): ResponseInterface
     {
-        $request = new Request(
-            'PATCH',
-            sprintf('%s%s', $this->uri, $resource),
-            [],
-            json_encode($body)
-        );
+        $request = $this->client->createRequest('PATCH', sprintf('%s%s', $this->uri, $resource))
+            ->withBody(stream_for(json_encode($body)));
 
         return $this->client->send($this->addAuthorizationHeader($request));
     }
 
     public function put(string $resource, array $body = []): ResponseInterface
     {
-        $request = new Request(
-            'PUT',
-            sprintf('%s%s', $this->uri, $resource),
-            [],
-            json_encode($body)
-        );
+        $request = $this->client->createRequest('PUT', sprintf('%s%s', $this->uri, $resource))
+            ->withBody(stream_for(json_encode($body)));
 
         return $this->client->send($this->addAuthorizationHeader($request));
     }
 
     public function delete(string $resource): ResponseInterface
     {
-        $request = new Request('DELETE', sprintf('%s%s', $this->uri, $resource));
+        $request = $this->client->createRequest('DELETE', sprintf('%s%s', $this->uri, $resource));
 
         return $this->client->send($this->addAuthorizationHeader($request));
     }

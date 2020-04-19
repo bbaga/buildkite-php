@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
 final class EmojiTest extends AbstractTestCase
 {

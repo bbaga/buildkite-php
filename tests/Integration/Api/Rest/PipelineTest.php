@@ -1,33 +1,48 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
 use GuzzleHttp\Exception\ClientException;
+use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class PipelineTest extends AbstractTestCase
 {
+    /**
+     * @var string
+     */
     private $pipelineName;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $pipelineName = $this->prefix.'-ci-test-pipeline-'.getenv('GITHUB_REF');
+        $pipelineName = $this->prefix . '-ci-test-pipeline-' . (string) getenv('GITHUB_REF');
         $this->pipelineName = $this->slugify($pipelineName);
     }
 
+    /**
+     * @psalm-suppress RedundantCondition
+     */
     public function testInSequence(): void
     {
-        $repository = getenv('GITHUB_REPOSITORY');
+        $repository = (string) getenv('GITHUB_REPOSITORY');
         $pipelineApi = $this->api->pipeline();
 
         try {
             $pipelineApi->get($this->organization, $this->pipelineName);
             $pipelineApi->delete($this->organization, $this->pipelineName);
         } catch (ClientException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
-            $this->assertEquals(404, $statusCode);
+            $response = $e->getResponse();
+
+            if (!$response instanceof ResponseInterface) {
+                throw $e;
+            }
+
+            $this->assertEquals(404, $response->getStatusCode());
         }
 
         $pipelineApi->create(
@@ -77,14 +92,22 @@ final class PipelineTest extends AbstractTestCase
 
         $this->assertIsArray($pipelinesData);
         $this->assertArrayHasKey('steps', $pipelinesData);
-        $this->assertCount(3, $pipelinesData['steps']);
+        /** @var array $steps */
+        $steps = $pipelinesData['steps'] ?? [];
+        $this->assertCount(3, $steps);
 
         try {
             $pipelineApi->get($this->organization, $this->pipelineName);
         } catch (ClientException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
+            $response = $e->getResponse();
+
+            if (!$response instanceof ResponseInterface) {
+                throw $e;
+            }
+
+            $statusCode = $response->getStatusCode();
         }
 
-        $this->assertEquals(404, $statusCode);
+        $this->assertEquals(404, $statusCode ?? 0);
     }
 }

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Api\Rest;
+namespace bbaga\BuildkiteApi\Api\Rest;
 
-use BuildkiteApi\Api\RestApi;
+use bbaga\BuildkiteApi\Api\RestApi;
 
 final class User
 {
