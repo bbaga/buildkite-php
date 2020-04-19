@@ -9,8 +9,22 @@ Proper documentation is coming soon.
 
 [Direct API calls](#direct-api-calls)
 * [Organizations API](#organizations-api)
+  * [List the ](#list-the-organizations)
+  * [Get a specific organization](#get-a-specific-organization)
 * [Pipelines API](#pipelines-api)
+  * [List pipelines in an organization](#list-pipelines-in-an-organizations)
+  * [Get a specific pipeline](#get-a-specific-pipeline)
+  * [Create a pipeline](#create-a-pipeline)
+  * [Update a pipeline](#update-a-pipeline)
+  * [Delete a pipeline](#delete-a-pipelne)
 * [Builds API](#builds-api)
+  * [List all builds across all the organizations](#list-all-builds-across-all-the-organizations)
+  * [Get a specific build](#get-a-specific-build)
+  * [Get builds in an organization](#get-builds-in-an-organization)
+  * [Get builds for a pipeline](#get-builds-for-a-pipeline)
+  * [Create new build](#create-a-new-build)
+  * [Cancel a running build](#cancel-a-running-build)
+  * [Restarting a build](#restarting-a-build)
 
 ### Setting up the RestApi object
 ```php
@@ -31,7 +45,7 @@ Organizations related methods are exposed via `$api->organization()`
 
 Detailed documentation for the Organizations API is available [here](https://buildkite.com/docs/apis/rest-api/organizations)
 
-#### List organizations
+#### List the organizations
 
 ```php
 $api->organization()->list();
@@ -111,7 +125,7 @@ $api->build()->get('my-organization', 'my-pipeline', $buildNumber);
 $api->build()->getByOrganization('my-organization', $queryParameters);
 ```
 
-#### Get builds for a pipelines
+#### Get builds for a pipeline
 ```php
 $api->build()->getByPipeline('my-organization', 'my-pipeline', $queryParameters);
 ```
