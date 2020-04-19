@@ -17,14 +17,14 @@ final class Build
         $this->api = $api;
     }
 
-    public function listAll(array $queryParameters): array
+    public function listAll(array $queryParameters = []): array
     {
         $response = $this->api->get('builds', ['query' => $queryParameters]);
 
         return $this->api->getResponseBody($response);
     }
 
-    public function getByOrganization(string $organizationSlug, array $queryParameters): array
+    public function getByOrganization(string $organizationSlug, array $queryParameters = []): array
     {
         $response = $this->api->get(
             sprintf('organizations/%s/builds', $organizationSlug),
@@ -34,7 +34,7 @@ final class Build
         return $this->api->getResponseBody($response);
     }
 
-    public function getByPipeline(string $organizationSlug, string $pipelineSlug, array $queryParameters): array
+    public function getByPipeline(string $organizationSlug, string $pipelineSlug, array $queryParameters = []): array
     {
         $uri = sprintf('organizations/%s/pipelines/%s/builds', $organizationSlug, $pipelineSlug);
         $response = $this->api->get($uri, ['query' => $queryParameters]);
