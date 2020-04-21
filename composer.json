@@ -14,7 +14,7 @@
   ],
   "require": {
     "ext-json": "*",
-    "bbaga/buildkite-php-http-interface": "dev-master"
+    "bbaga/buildkite-php-http-interface": "^1.0"
   },
   "autoload": {
     "psr-4": {
