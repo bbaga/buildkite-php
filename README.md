@@ -39,7 +39,7 @@ composer require bbaga/buildkite-php
 
 ### Setting up the RestApi object
 ```php
-use BuildkiteApi\Api\RestApi;
+use bbaga\BuildkiteApi\Api\RestApi;
 
 require __DIR__.'/vendor/autoload.php';
 
