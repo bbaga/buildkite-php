@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
 use GuzzleHttp\Exception\ClientException;
+use Psr\Http\Message\ResponseInterface;
 
 final class BuildTest extends AbstractTestCase
 {
@@ -12,32 +13,46 @@ final class BuildTest extends AbstractTestCase
         parent::setUp();
     }
 
+    /**
+     * @psalm-suppress RedundantCondition
+     */
     public function testListAll(): void
     {
         $list = $this->api->build()->listAll();
         $this->assertIsArray($list);
     }
 
+    /**
+     * @psalm-suppress RedundantCondition
+     */
     public function testGetByOrganization(): void
     {
         $list = $this->api->build()->getByOrganization($this->organization);
         $this->assertIsArray($list);
     }
 
+    /**
+     * @psalm-suppress RedundantCondition
+     */
     public function testGetByPipeline(): void
     {
-        $repository = getenv('GITHUB_REPOSITORY');
+        $repository = (string) getenv('GITHUB_REPOSITORY');
         $pipelineApi = $this->api->pipeline();
         $pipelineSlug = $this->slugify(
-            $this->prefix.'-ci-test-pipeline-'.getenv('GITHUB_REF')
+            $this->prefix.'-ci-test-pipeline-'. (string) getenv('GITHUB_REF')
         );
 
         try {
             $pipelineApi->get($this->organization, $pipelineSlug);
             $pipelineApi->delete($this->organization, $pipelineSlug);
         } catch (ClientException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
-            $this->assertEquals(404, $statusCode);
+            $response = $e->getResponse();
+
+            if (!$response instanceof ResponseInterface) {
+                throw $e;
+            }
+
+            $this->assertEquals(404, $response->getStatusCode());
         }
 
         $pipeline = $pipelineApi->create(
@@ -56,6 +71,7 @@ final class BuildTest extends AbstractTestCase
         );
 
         try {
+            /** @var string $pipelineSlug */
             $pipelineSlug = $pipeline['slug'];
 
             $list = $this->api->build()->getByPipeline($this->organization, $pipelineSlug);
@@ -76,6 +92,7 @@ final class BuildTest extends AbstractTestCase
             $this->assertIsArray($build);
             $this->assertArrayHasKey('number', $build);
 
+            /** @var int $buildNumber */
             $buildNumber = $build['number'];
 
             $this->api->build()->get($this->organization, $pipelineSlug, $buildNumber);

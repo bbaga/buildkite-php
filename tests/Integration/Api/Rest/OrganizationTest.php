@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace BuildkiteApi\Tests\Integration\Api\Rest;
+namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class OrganizationTest extends AbstractTestCase
 {
 

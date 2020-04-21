@@ -14,20 +14,36 @@
   ],
   "require": {
     "ext-json": "*",
-    "guzzlehttp/guzzle": "^6.5"
+    "bbaga/buildkite-php-http-interface": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "BuildkiteApi\\": "src/"
+      "bbaga\\BuildkiteApi\\": "src/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload-dev": {
     "psr-4": {
-      "BuildkiteApi\\Tests\\": "tests/"
+      "bbaga\\BuildkiteApi\\Tests\\": "tests/"
     }
   },
   "require-dev": {
     "phpunit/phpunit": "^8.5",
-    "vimeo/psalm": "^3.11"
+    "vimeo/psalm": "^3.11",
+    "psalm/plugin-phpunit": "^0.10.0",
+    "bbaga/buildkite-php-guzzle-client": "dev-master"
+  },
+  "scripts": {
+    "test": {
+      "psalm": "vendor/bin/psalm",
+      "unit": "vendor/bin/phpunit"
+    },
+    "integration": {
+      "integration": "vendor/bin/phpunit --testsuite integration"
+    }
+  },
+  "suggest": {
+    "bbaga/buildkite-php-guzzle-client": "Provides basic, off the shelf http client implementation"
   }
 }
