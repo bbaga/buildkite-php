@@ -5,7 +5,7 @@ on:
 
 jobs:
   type-coverage-report:
-    name: "Type coverage report"
+    name: "Static Analysis"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout"
