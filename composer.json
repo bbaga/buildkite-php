@@ -36,8 +36,12 @@
     "symplify/easy-coding-standard": "^7.2"
   },
   "scripts": {
+    "ecs-fix": {
+      "fix": "vendor/bin/ecs check src tests --fix"
+    },
     "test": {
       "psalm": "vendor/bin/psalm",
+      "ecs": "vendor/bin/ecs check src tests",
       "unit": "vendor/bin/phpunit"
     },
     "integration": {
