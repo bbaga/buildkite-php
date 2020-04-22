@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api\Rest;
@@ -84,7 +85,8 @@ final class Job
             $buildNumber,
             $jobId
         );
-        $response = $this->api->delete($uri);
+
+        $this->api->delete($uri);
     }
 
     public function getEnvironmentVariables(

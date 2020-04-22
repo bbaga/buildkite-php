@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Unit\Api;
@@ -39,7 +40,7 @@ final class RestApiTest extends TestCase
         $client->send(
             Argument::type(RequestInterface::class),
             Argument::type('array')
-        )->will(function(array $args) use ($testCase, $token): ResponseInterface {
+        )->will(function (array $args) use ($testCase, $token): ResponseInterface {
             /** @var RequestInterface $request */
             $request = $args[0];
             /** @var array $options */

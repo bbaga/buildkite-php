@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api\Rest;
@@ -18,28 +19,40 @@ final class Artifact
     }
 
     public function get(
-      string $organizationSlug,
-      string $pipelineSlug,
-      int $buildNumber,
-      string $jobId,
-      string $artifactId
+        string $organizationSlug,
+        string $pipelineSlug,
+        int $buildNumber,
+        string $jobId,
+        string $artifactId
     ): array {
-        $uri = sprintf('organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts/%s', $organizationSlug, $pipelineSlug,
-          $buildNumber, $jobId, $artifactId);
+        $uri = sprintf(
+            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts/%s',
+            $organizationSlug,
+            $pipelineSlug,
+            $buildNumber,
+            $jobId,
+            $artifactId
+        );
         $response = $this->api->get($uri);
 
         return $this->api->getResponseBody($response);
     }
 
     public function getDownloadUrl(
-      string $organizationSlug,
-      string $pipelineSlug,
-      int $buildNumber,
-      string $jobId,
-      string $artifactId
+        string $organizationSlug,
+        string $pipelineSlug,
+        int $buildNumber,
+        string $jobId,
+        string $artifactId
     ): array {
-        $uri = sprintf('organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts/%s/download', $organizationSlug,
-          $pipelineSlug, $buildNumber, $jobId, $artifactId);
+        $uri = sprintf(
+            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts/%s/download',
+            $organizationSlug,
+            $pipelineSlug,
+            $buildNumber,
+            $jobId,
+            $artifactId
+        );
         $response = $this->api->get($uri, ['allow_redirects' => false]);
 
         return $this->api->getResponseBody($response);
@@ -47,8 +60,12 @@ final class Artifact
 
     public function getByBuild(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
     {
-        $uri = sprintf('organizations/%s/pipelines/%s/builds/%d/artifacts', $organizationSlug, $pipelineSlug,
-          $buildNumber);
+        $uri = sprintf(
+            'organizations/%s/pipelines/%s/builds/%d/artifacts',
+            $organizationSlug,
+            $pipelineSlug,
+            $buildNumber
+        );
         $response = $this->api->get($uri);
 
         return $this->api->getResponseBody($response);
@@ -56,8 +73,13 @@ final class Artifact
 
     public function getByJob(string $organizationSlug, string $pipelineSlug, int $buildNumber, string $jobId): array
     {
-        $uri = sprintf('organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts', $organizationSlug, $pipelineSlug,
-          $buildNumber, $jobId);
+        $uri = sprintf(
+            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts',
+            $organizationSlug,
+            $pipelineSlug,
+            $buildNumber,
+            $jobId
+        );
         $response = $this->api->get($uri);
 
         return $this->api->getResponseBody($response);

@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
 
 final class UserTest extends AbstractTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

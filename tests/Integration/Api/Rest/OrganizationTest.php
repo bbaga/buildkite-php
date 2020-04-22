@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
@@ -8,7 +9,6 @@ namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
  */
 final class OrganizationTest extends AbstractTestCase
 {
-
     public function testList(): void
     {
         $organizations = $this->api->organization()->list();

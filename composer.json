@@ -32,7 +32,8 @@
     "phpunit/phpunit": "^8.5",
     "vimeo/psalm": "^3.11",
     "psalm/plugin-phpunit": "^0.10.0",
-    "bbaga/buildkite-php-guzzle-client": "^1.0"
+    "bbaga/buildkite-php-guzzle-client": "^1.0",
+    "symplify/easy-coding-standard": "^7.2"
   },
   "scripts": {
     "test": {
