@@ -18,7 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use function is_array;
 
-final class RestApi
+final class RestApi implements RestApiInterface
 {
     /**
      * @var HttpClientInterface
@@ -49,19 +49,8 @@ final class RestApi
         $this->uri = $uri;
     }
 
-    public function getResponseBody(ResponseInterface $response, callable $customHandler = null): array
+    public function getResponseBody(ResponseInterface $response): array
     {
-        if ($customHandler !== null) {
-            /** @var mixed $data */
-            $data = $customHandler($response);
-
-            if (!is_array($data)) {
-                throw new \RuntimeException('Return type of custom response handler must be array');
-            }
-
-            return $data;
-        }
-
         /** @var mixed $data */
         $data = json_decode((string) $response->getBody(), true);
 
