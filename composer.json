@@ -4,7 +4,11 @@
   "description": "PHP client library for consuming the Buildkite API",
   "keywords": [
     "php",
-    "buildkite"
+    "buildkite",
+    "rest",
+    "api",
+    "client",
+    "composer"
   ],
   "license": "MIT",
   "authors": [

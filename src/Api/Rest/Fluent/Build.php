@@ -121,7 +121,7 @@ final class Build
     private $pipeline;
 
     /**
-     * @var array
+     * @var Job[]
      */
     private $jobs;
 
@@ -143,31 +143,12 @@ final class Build
         $this->populate($map);
     }
 
-    private function populate(array $map): void
+    /**
+     * @return int
+     */
+    public function getNumber(): int
     {
-        $this->number = (int)$map['number'];
-        $this->id = (string)($map['id'] ?? '');
-        $this->url = (string)($map['url'] ?? '');
-        $this->web_url = (string)($map['web_url'] ?? '');
-        $this->state = (string)($map['state'] ?? '');
-        $this->blocked = (bool)($map['blocked'] ?? false);
-        $this->message = (string)($map['message'] ?? '');
-        $this->commit = (string)($map['commit'] ?? '');
-        $this->branch = (string)($map['branch'] ?? '');
-        $this->tag = (string)($map['tag'] ?? '');
-        $this->env = (array)($map['env'] ?? []);
-        $this->source = (string)($map['source'] ?? '');
-        $this->creator = (array)($map['creator'] ?? []);
-        $this->createdAt = (string)($map['created_at'] ?? '');
-        $this->scheduledAt = (string)($map['scheduled_at'] ?? '');
-        $this->startedAt = (string)($map['started_at'] ?? '');
-        $this->finishedAt = (string)($map['finished_at'] ?? '');
-        $this->metaData = (array)($map['meta_data'] ?? []);
-        $this->pullRequest = (array)($map['pull_request'] ?? []);
-        $this->pipeline = $map['pipeline'] instanceof Pipeline
-            ? $map['pipeline']
-            : new Pipeline($this->api, $this->organizationSlug, (array)$map['pipeline']);
-        $this->jobs = (array)($map['jobs'] ?? []);
+        return $this->number;
     }
 
     /**
@@ -323,11 +304,16 @@ final class Build
     }
 
     /**
-     * @return array
+     * @return Job[]
      */
     public function getJobs(): array
     {
         return $this->jobs;
+    }
+
+    public function getAnnotations(): Annotations
+    {
+        return new Annotations($this->api, $this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber());
     }
 
     public function fetch(): self
@@ -338,11 +324,35 @@ final class Build
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumber(): int
+    private function populate(array $map): void
     {
-        return $this->number;
+        $this->number = (int)$map['number'];
+        $this->id = (string)($map['id'] ?? '');
+        $this->url = (string)($map['url'] ?? '');
+        $this->web_url = (string)($map['web_url'] ?? '');
+        $this->state = (string)($map['state'] ?? '');
+        $this->blocked = (bool)($map['blocked'] ?? false);
+        $this->message = (string)($map['message'] ?? '');
+        $this->commit = (string)($map['commit'] ?? '');
+        $this->branch = (string)($map['branch'] ?? '');
+        $this->tag = (string)($map['tag'] ?? '');
+        $this->env = (array)($map['env'] ?? []);
+        $this->source = (string)($map['source'] ?? '');
+        $this->creator = (array)($map['creator'] ?? []);
+        $this->createdAt = (string)($map['created_at'] ?? '');
+        $this->scheduledAt = (string)($map['scheduled_at'] ?? '');
+        $this->startedAt = (string)($map['started_at'] ?? '');
+        $this->finishedAt = (string)($map['finished_at'] ?? '');
+        $this->metaData = (array)($map['meta_data'] ?? []);
+        $this->pullRequest = (array)($map['pull_request'] ?? []);
+        $this->pipeline = $map['pipeline'] instanceof Pipeline
+            ? $map['pipeline']
+            : new Pipeline($this->api, $this->organizationSlug, (array)$map['pipeline']);
+        $this->jobs = [];
+
+        /** @var array $job */
+        foreach ((array)($map['jobs'] ?? []) as $job) {
+            $this->jobs[] = new Job($this->api, $this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber(), $job);
+        }
     }
 }

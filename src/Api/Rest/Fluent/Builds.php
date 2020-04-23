@@ -29,7 +29,6 @@ final class Builds
     private $pipelineSlug;
 
     /**
-     * Builds constructor.
      * @param RestApiInterface $api
      * @param string $organizationSlug
      * @param string|null $pipelineSlug

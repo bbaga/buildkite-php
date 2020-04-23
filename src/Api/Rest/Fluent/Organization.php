@@ -149,14 +149,14 @@ final class Organization
         return $this;
     }
 
-    /**
-     * @param int $limit
-     * @param int $page
-     * @return Pipelines
-     */
     public function getPipelines(): Pipelines
     {
         return new Pipelines($this->api, $this->getSlug());
+    }
+
+    public function getEmojis(): Emojis
+    {
+        return new Emojis($this->api, $this->getSlug());
     }
 
     private function populate(array $map): void

@@ -19,7 +19,6 @@ final class Organizations
     private $organizations;
 
     /**
-     * Organizations constructor.
      * @param RestApiInterface $api
      * @param Organization[] $organizations
      */

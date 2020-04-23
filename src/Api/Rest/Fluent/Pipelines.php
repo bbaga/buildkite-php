@@ -24,7 +24,6 @@ final class Pipelines
     private $organizationSlug;
 
     /**
-     * Pipelines constructor.
      * @param RestApiInterface $api
      * @param string $organizationSlug
      * @param Pipeline[] $pipelines
