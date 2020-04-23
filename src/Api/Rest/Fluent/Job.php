@@ -15,19 +15,9 @@ final class Job
     private $api;
 
     /**
-     * @var string
+     * @var Build
      */
-    private $organizationSlug;
-
-    /**
-     * @var string
-     */
-    private $pipelineSlug;
-
-    /**
-     * @var int
-     */
-    private $buildNumber;
+    private $build;
 
     /**
      * @var string
@@ -179,12 +169,10 @@ final class Job
      */
     private $unblockUrl;
 
-    public function __construct(RestApiInterface $api, string $organizationSlug, string $pipelineSlug, int $buildNumber, array $map = [])
+    public function __construct(RestApiInterface $api, Build $build, array $map = [])
     {
         $this->api = $api;
-        $this->organizationSlug = $organizationSlug;
-        $this->pipelineSlug = $pipelineSlug;
-        $this->buildNumber = $buildNumber;
+        $this->build = $build;
 
         if (!isset($map['id']) || !is_string($map['id'])) {
             throw new \InvalidArgumentException(
@@ -435,12 +423,34 @@ final class Job
         return $this->unblockUrl;
     }
 
+    /**
+     * @return Artifact[]
+     */
+    public function getArtifacts(): array
+    {
+        $result = $this->api->artifact()->getByJob(
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
+            $this->getId()
+        );
+
+        $artifacts = [];
+
+        /** @var array $artifact */
+        foreach ($result as $artifact) {
+            $artifacts[] = new Artifact($this->api, $this->build, $artifact);
+        }
+
+        return $artifacts;
+    }
+
     public function retry(): self
     {
         $result = $this->api->job()->retry(
-            $this->organizationSlug,
-            $this->pipelineSlug,
-            $this->buildNumber,
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
             $this->getId()
         );
 
@@ -452,9 +462,9 @@ final class Job
     public function unblock(array $fields = [], string $userId = null): self
     {
         $result = $this->api->job()->unblock(
-            $this->organizationSlug,
-            $this->pipelineSlug,
-            $this->buildNumber,
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
             $this->getId(),
             $fields,
             $userId
@@ -468,9 +478,9 @@ final class Job
     public function getLogOutput(): array
     {
         return $this->api->job()->getLogOutput(
-            $this->organizationSlug,
-            $this->pipelineSlug,
-            $this->buildNumber,
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
             $this->getId()
         );
     }
@@ -478,9 +488,9 @@ final class Job
     public function deleteLogOutput(): void
     {
         $this->api->job()->deleteLogOutput(
-            $this->organizationSlug,
-            $this->pipelineSlug,
-            $this->buildNumber,
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
             $this->getId()
         );
     }
@@ -488,9 +498,9 @@ final class Job
     public function getEnvironmentVariables(): array
     {
         $result = $this->api->job()->getEnvironmentVariables(
-            $this->organizationSlug,
-            $this->pipelineSlug,
-            $this->buildNumber,
+            $this->build->getOrganizationSlug(),
+            $this->build->getPipelineSlug(),
+            $this->build->getNumber(),
             $this->getId()
         );
 

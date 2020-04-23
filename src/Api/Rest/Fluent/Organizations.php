@@ -14,34 +14,16 @@ final class Organizations
     private $api;
 
     /**
-     * @var Organization[]
-     */
-    private $organizations;
-
-    /**
      * @param RestApiInterface $api
      * @param Organization[] $organizations
      */
-    public function __construct(RestApiInterface $api, array $organizations = [])
+    public function __construct(RestApiInterface $api)
     {
         $this->api = $api;
-        $this->organizations = $organizations;
     }
 
     /** @return Organization[] */
     public function get(): array
-    {
-        if (count($this->organizations) === 0) {
-            $this->organizations = $this->fetch();
-        }
-
-        return $this->organizations;
-    }
-
-    /**
-     * @return Organization[]
-     */
-    public function fetch(): array
     {
         $organizations = $this->api->getResponseBody($this->api->get('organizations'));
 
@@ -51,8 +33,6 @@ final class Organizations
         foreach ($organizations as $organization) {
             $list[] = new Organization($this->api, $organization);
         }
-
-        $this->organizations = $list;
 
         return $list;
     }

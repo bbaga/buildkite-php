@@ -149,19 +149,60 @@ final class Organization
         return $this;
     }
 
-    public function getPipelines(): Pipelines
+    /**
+     * @return Pipeline[]
+     */
+    public function getPipelines(): array
     {
-        return new Pipelines($this->api, $this->getSlug());
+        $pipelines = $this->api->pipeline()->list($this->getSlug());
+
+        $list = [];
+
+        /** @var array $pipeline */
+        foreach ($pipelines as $pipeline) {
+            $list[] = new Pipeline($this->api, $this, $pipeline);
+        }
+
+        return $list;
     }
 
-    public function getEmojis(): Emojis
+    /**
+     * @return Emoji[]
+     */
+    public function getEmojis(): array
     {
-        return new Emojis($this->api, $this->getSlug());
+        $api = $this->api->emoji();
+
+        $emojis = $api->list($this->getSlug());
+
+        $list = [];
+
+        /** @var array $emoji */
+        foreach ($emojis as $emoji) {
+            $list[] = new Emoji($emoji);
+        }
+
+        return $list;
     }
 
-    public function getAgents(): Agents
+    /**
+     * @param array $queryParameters
+     * @return Agent[]
+     */
+    public function getAgents(array $queryParameters = []): array
     {
-        return new Agents($this->api, $this->getSlug());
+        $api = $this->api->agent();
+
+        $agents = $api->list($this->getSlug(), $queryParameters);
+
+        $list = [];
+
+        /** @var array $agent */
+        foreach ($agents as $agent) {
+            $list[] = new Agent($this->api, $this, $agent);
+        }
+
+        return $list;
     }
 
     private function populate(array $map): void
