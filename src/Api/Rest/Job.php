@@ -36,11 +36,13 @@ final class Job
         return $this->api->getResponseBody($response);
     }
 
-    public function unlock(
+    public function unblock(
         string $organizationSlug,
         string $pipelineSlug,
         int $buildNumber,
-        string $jobId
+        string $jobId,
+        array $fields = [],
+        string $userId = null
     ): array {
         $uri = sprintf(
             'organizations/%s/pipelines/%s/builds/%d/jobs/%s/unlock',
@@ -49,7 +51,21 @@ final class Job
             $buildNumber,
             $jobId
         );
-        $response = $this->api->put($uri);
+
+        $body = [];
+
+        if ($userId !== null) {
+            $body['unblocker'] = $userId;
+        }
+
+        if (count($fields) > 0) {
+            $body['fields'] = $fields;
+        }
+
+        $response = $this->api->put(
+            $uri,
+            $body
+        );
 
         return $this->api->getResponseBody($response);
     }

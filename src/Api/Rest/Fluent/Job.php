@@ -159,6 +159,26 @@ final class Job
      */
     private $parallelGroupTotal;
 
+    /**
+     * @var User
+     */
+    private $unblockedBy;
+
+    /**
+     * @var string
+     */
+    private $unblockedAt;
+
+    /**
+     * @var bool
+     */
+    private $unblockable;
+
+    /**
+     * @var string
+     */
+    private $unblockUrl;
+
     public function __construct(RestApiInterface $api, string $organizationSlug, string $pipelineSlug, int $buildNumber, array $map = [])
     {
         $this->api = $api;
@@ -383,12 +403,99 @@ final class Job
         return $this->parallelGroupTotal;
     }
 
+    /**
+     * @return User
+     */
+    public function getUnblockedBy(): User
+    {
+        return $this->unblockedBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnblockedAt(): string
+    {
+        return $this->unblockedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnblockable(): bool
+    {
+        return $this->unblockable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnblockUrl(): string
+    {
+        return $this->unblockUrl;
+    }
+
     public function retry(): self
     {
-        $result = $this->api->job()->retry($this->organizationSlug, $this->pipelineSlug, $this->buildNumber, $this->getId());
+        $result = $this->api->job()->retry(
+            $this->organizationSlug,
+            $this->pipelineSlug,
+            $this->buildNumber,
+            $this->getId()
+        );
+
         $this->populate($result);
 
         return $this;
+    }
+
+    public function unblock(array $fields = [], string $userId = null): self
+    {
+        $result = $this->api->job()->unblock(
+            $this->organizationSlug,
+            $this->pipelineSlug,
+            $this->buildNumber,
+            $this->getId(),
+            $fields,
+            $userId
+        );
+
+        $this->populate($result);
+
+        return $this;
+    }
+
+    public function getLogOutput(): array
+    {
+        return $this->api->job()->getLogOutput(
+            $this->organizationSlug,
+            $this->pipelineSlug,
+            $this->buildNumber,
+            $this->getId()
+        );
+    }
+
+    public function deleteLogOutput(): void
+    {
+        $this->api->job()->deleteLogOutput(
+            $this->organizationSlug,
+            $this->pipelineSlug,
+            $this->buildNumber,
+            $this->getId()
+        );
+    }
+
+    public function getEnvironmentVariables(): array
+    {
+        $result = $this->api->job()->getEnvironmentVariables(
+            $this->organizationSlug,
+            $this->pipelineSlug,
+            $this->buildNumber,
+            $this->getId()
+        );
+
+        /** @var array $result['env'] */
+        return $result['env'] ?? [];
     }
 
     private function populate(array $map): void
@@ -419,5 +526,17 @@ final class Job
         $this->retriesCount = (int)($map['retries_count'] ?? 0);
         $this->parallelGroupIndex = (string)($map['parallel_group_index'] ?? '');
         $this->parallelGroupTotal = (int)($map['parallel_group_total'] ?? 0);
+        $this->unblockedAt = (string)($map['unblocked_at'] ?? '');
+        $this->unblockable = (bool)($map['unblockable'] ?? false);
+        $this->unblockUrl = (string)($map['unblock_url'] ?? '');
+
+        /** @var array|User $unblockedBy */
+        $unblockedBy = $map['unblocked_by'] ?? [];
+
+        if ($unblockedBy instanceof User) {
+            $this->unblockedBy = $unblockedBy;
+        } else {
+            $this->unblockedBy = new User($this->api, (array)$unblockedBy);
+        }
     }
 }

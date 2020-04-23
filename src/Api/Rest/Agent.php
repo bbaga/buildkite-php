@@ -36,11 +36,9 @@ final class Agent
         return $this->api->getResponseBody($response);
     }
 
-    public function stop(string $organizationSlug, string $agentId, bool $force = true): array
+    public function stop(string $organizationSlug, string $agentId, bool $force = true): void
     {
         $uri = sprintf('organizations/%s/agents/%s/stop', $organizationSlug, $agentId);
-        $response = $this->api->put($uri, ['force' => $force]);
-
-        return $this->api->getResponseBody($response);
+        $this->api->put($uri, ['force' => $force]);
     }
 }

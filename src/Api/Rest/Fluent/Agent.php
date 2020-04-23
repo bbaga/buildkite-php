@@ -226,6 +226,11 @@ final class Agent
         return $this->metaData;
     }
 
+    public function stop(bool $force = false): void
+    {
+        $this->api->agent()->stop($this->organizationSlug, $this->getId(), $force);
+    }
+
     private function populate(array $map): void
     {
         $this->id = (string)($map['id'] ?? '');

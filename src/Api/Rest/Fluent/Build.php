@@ -6,7 +6,6 @@ namespace bbaga\BuildkiteApi\Api\Rest\Fluent;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 use function is_array;
-use function is_int;
 
 final class Build
 {
@@ -81,7 +80,7 @@ final class Build
     private $source;
 
     /**
-     * @var array
+     * @var User
      */
     private $creator;
 
@@ -130,14 +129,8 @@ final class Build
         $this->api = $api;
         $this->organizationSlug = $organizationSlug;
 
-        if (!isset($map['number']) || !is_int($map['number'])) {
-            throw new \InvalidArgumentException(
-                'The "number" (representing the build number) must be an integer value'
-            );
-        }
-
         if (!isset($map['pipeline']) || (!$map['pipeline'] instanceof Pipeline && !is_array($map['pipeline']))) {
-            throw new \InvalidArgumentException('The "pipeline"  must be an array or an instance of ' . Pipeline::class);
+            throw new \InvalidArgumentException('The "pipeline" must be an array or an instance of ' . Pipeline::class);
         }
 
         $this->populate($map);
@@ -240,9 +233,9 @@ final class Build
     }
 
     /**
-     * @return array
+     * @return User
      */
-    public function getCreator(): array
+    public function getCreator(): User
     {
         return $this->creator;
     }
@@ -316,6 +309,45 @@ final class Build
         return new Annotations($this->api, $this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber());
     }
 
+    public function create(array $data): self
+    {
+        $result = $this->api->build()->create(
+            $this->organizationSlug,
+            $this->pipeline->getSlug(),
+            $data
+        );
+
+        $this->populate($result);
+
+        return $this;
+    }
+
+    public function cancel(): self
+    {
+        $result = $this->api->build()->cancel(
+            $this->organizationSlug,
+            $this->pipeline->getSlug(),
+            $this->getNumber()
+        );
+
+        $this->populate($result);
+
+        return $this;
+    }
+
+    public function rebuild(): self
+    {
+        $result = $this->api->build()->rebuild(
+            $this->organizationSlug,
+            $this->pipeline->getSlug(),
+            $this->getNumber()
+        );
+
+        $this->populate($result);
+
+        return $this;
+    }
+
     public function fetch(): self
     {
         $response = $this->api->build()->get($this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber());
@@ -326,7 +358,7 @@ final class Build
 
     private function populate(array $map): void
     {
-        $this->number = (int)$map['number'];
+        $this->number = (int)($map['number'] ?? 0);
         $this->id = (string)($map['id'] ?? '');
         $this->url = (string)($map['url'] ?? '');
         $this->web_url = (string)($map['web_url'] ?? '');
@@ -338,7 +370,6 @@ final class Build
         $this->tag = (string)($map['tag'] ?? '');
         $this->env = (array)($map['env'] ?? []);
         $this->source = (string)($map['source'] ?? '');
-        $this->creator = (array)($map['creator'] ?? []);
         $this->createdAt = (string)($map['created_at'] ?? '');
         $this->scheduledAt = (string)($map['scheduled_at'] ?? '');
         $this->startedAt = (string)($map['started_at'] ?? '');
@@ -346,11 +377,24 @@ final class Build
         $this->metaData = (array)($map['meta_data'] ?? []);
         $this->pullRequest = (array)($map['pull_request'] ?? []);
 
-        if (($map['pipeline'] ?? null) instanceof Pipeline) {
-            /** @var Pipeline pipeline */
-            $this->pipeline = $map['pipeline'];
+        /** @var array|User creator */
+        $creatorData = $map['creator'] ?? [];
+
+        if ($creatorData instanceof User) {
+            /** @var User $creatorData */
+            $this->creator = $creatorData;
         } else {
-            $this->pipeline = new Pipeline($this->api, $this->organizationSlug, (array) $map['pipeline']);
+            $this->creator = new User($this->api, $creatorData);
+        }
+
+        /** @var array|Pipeline $pipelineData */
+        $pipelineData = $map['pipeline'] ?? [];
+
+        if ($pipelineData instanceof Pipeline) {
+            /** @var Pipeline $pipelineData */
+            $this->pipeline = $pipelineData;
+        } else {
+            $this->pipeline = new Pipeline($this->api, $this->organizationSlug, (array)$pipelineData);
         }
 
         $this->jobs = [];

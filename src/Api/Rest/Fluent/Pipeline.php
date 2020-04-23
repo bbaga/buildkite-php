@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace bbaga\BuildkiteApi\Api\Rest\Fluent;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
-use function is_string;
 
 final class Pipeline
 {
@@ -153,10 +152,6 @@ final class Pipeline
     {
         $this->api = $api;
         $this->organizationSlug = $organizationSlug;
-
-        if (!isset($map['slug']) || !is_string($map['slug'])) {
-            throw new \InvalidArgumentException('The "slug" (representing the pipeline\'s slug) must be a string value');
-        }
 
         $this->populate($map);
     }
@@ -369,17 +364,50 @@ final class Pipeline
         return $this->configuration;
     }
 
-    public function fetch(): self
+    public function getBuilds(): Builds
     {
-        $response = $this->api->pipeline()->get($this->organizationSlug, $this->getSlug());
-        $this->populate($response);
+        return new Builds($this->api, $this->organizationSlug, $this->getSlug());
+    }
+
+    public function create(array $data): self
+    {
+        $result = $this->api->pipeline()->create(
+            $this->organizationSlug,
+            $data
+        );
+
+        $this->populate($result);
 
         return $this;
     }
 
-    public function getBuilds(): Builds
+    public function update(array $data): self
     {
-        return new Builds($this->api, $this->organizationSlug, $this->getSlug());
+        $result = $this->api->pipeline()->update(
+            $this->organizationSlug,
+            $this->getSlug(),
+            $data
+        );
+
+        $this->populate($result);
+
+        return $this;
+    }
+
+    public function delete(): void
+    {
+        $this->api->pipeline()->delete(
+            $this->organizationSlug,
+            $this->getSlug()
+        );
+    }
+
+    public function fetch(string $slug = null): self
+    {
+        $response = $this->api->pipeline()->get($this->organizationSlug, $slug ?? $this->getSlug());
+        $this->populate($response);
+
+        return $this;
     }
 
     private function populate(array $map): void
