@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api;
@@ -7,8 +8,8 @@ use bbaga\BuildkiteApi\Api\Rest\Agent;
 use bbaga\BuildkiteApi\Api\Rest\Annotation;
 use bbaga\BuildkiteApi\Api\Rest\Artifact;
 use bbaga\BuildkiteApi\Api\Rest\Build;
-use bbaga\BuildkiteApi\Api\Rest\Job;
 use bbaga\BuildkiteApi\Api\Rest\Emoji;
+use bbaga\BuildkiteApi\Api\Rest\Job;
 use bbaga\BuildkiteApi\Api\Rest\Organization;
 use bbaga\BuildkiteApi\Api\Rest\Pipeline;
 use bbaga\BuildkiteApi\Api\Rest\User;
@@ -17,9 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use function is_array;
 
-final class RestApi
+final class RestApi implements RestApiInterface
 {
-
     /**
      * @var HttpClientInterface
      */
@@ -35,7 +35,7 @@ final class RestApi
      */
     private $uri;
 
-    const BASE_URI = 'https://api.buildkite.com/v2/';
+    public const BASE_URI = 'https://api.buildkite.com/v2/';
 
     /**
      * @param HttpClientInterface $client
@@ -49,19 +49,8 @@ final class RestApi
         $this->uri = $uri;
     }
 
-    public function getResponseBody(ResponseInterface $response, callable $customHandler = null): array
+    public function getResponseBody(ResponseInterface $response): array
     {
-        if ($customHandler !== null) {
-            /** @var mixed $data */
-            $data = $customHandler($response);
-
-            if (!is_array($data)) {
-                throw new \RuntimeException('Return type of custom response handler must be array');
-            }
-
-            return $data;
-        }
-
         /** @var mixed $data */
         $data = json_decode((string) $response->getBody(), true);
 
@@ -69,9 +58,7 @@ final class RestApi
             throw new \RuntimeException(json_last_error_msg());
         }
 
-        $data = is_array($data) ? $data : [$data];
-
-        return $data;
+        return is_array($data) ? $data : [$data];
     }
 
     public function get(string $resource, array $options = []): ResponseInterface

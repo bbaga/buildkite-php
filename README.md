@@ -43,13 +43,14 @@ use bbaga\BuildkiteApi\Api\RestApi;
 
 require __DIR__.'/vendor/autoload.php';
 
-/** @var \BuildkiteApi\Api\HttpClientInterface */
+/** @var \BuildkiteApi\Api\HttpClientInterface $client */
 $client = new MyHttpClient(); 
 
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
 
 `\BuildkiteApi\Api\HttpClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
+`\BuildkiteApi\Api\HttpClientInterface` is available in the [`bbaga/buildkite-php-http-interface`](https://github.com/bbaga/buildkite-php-http-interface) package.
 
 ### Direct API calls
 

@@ -1,23 +1,24 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api\Rest;
 
-use bbaga\BuildkiteApi\Api\RestApi;
+use bbaga\BuildkiteApi\Api\RestApiInterface;
 
 final class Annotation
 {
     /**
-     * @var RestApi
+     * @var RestApiInterface
      */
     private $api;
 
-    public function __construct(RestApi $api)
+    public function __construct(RestApiInterface $api)
     {
         $this->api = $api;
     }
 
-    public function list(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
+    public function list(string $organizationSlug, string $pipelineSlug, int $buildNumber, array $queryParameters = []): array
     {
         $uri = sprintf(
             'organizations/%s/pipelines/%s/builds/%d/annotations',
@@ -25,7 +26,8 @@ final class Annotation
             $pipelineSlug,
             $buildNumber
         );
-        $response = $this->api->get($uri);
+
+        $response = $this->api->get($uri, ['query' => $queryParameters]);
 
         return $this->api->getResponseBody($response);
     }

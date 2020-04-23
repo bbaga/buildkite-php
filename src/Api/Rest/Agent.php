@@ -1,26 +1,27 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api\Rest;
 
-use bbaga\BuildkiteApi\Api\RestApi;
+use bbaga\BuildkiteApi\Api\RestApiInterface;
 
 final class Agent
 {
     /**
-     * @var RestApi
+     * @var RestApiInterface
      */
     private $api;
 
-    public function __construct(RestApi $api)
+    public function __construct(RestApiInterface $api)
     {
         $this->api = $api;
     }
 
-    public function list(string $organizationSlug, array $queryParameters): array
+    public function list(string $organizationSlug, array $queryParameters = []): array
     {
         $response = $this->api->get(
-            sprintf('organizations/%s/builds', $organizationSlug),
+            sprintf('organizations/%s/agents', $organizationSlug),
             ['query' => $queryParameters]
         );
 
@@ -35,11 +36,9 @@ final class Agent
         return $this->api->getResponseBody($response);
     }
 
-    public function stop(string $organizationSlug, string $agentId, bool $force = true): array
+    public function stop(string $organizationSlug, string $agentId, bool $force = true): void
     {
         $uri = sprintf('organizations/%s/agents/%s/stop', $organizationSlug, $agentId);
-        $response = $this->api->put($uri, ['force' => $force]);
-
-        return $this->api->getResponseBody($response);
+        $this->api->put($uri, ['force' => $force]);
     }
 }

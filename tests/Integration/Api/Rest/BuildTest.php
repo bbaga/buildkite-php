@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest;
@@ -39,7 +40,7 @@ final class BuildTest extends AbstractTestCase
         $repository = (string) getenv('GITHUB_REPOSITORY');
         $pipelineApi = $this->api->pipeline();
         $pipelineSlug = $this->slugify(
-            $this->prefix.'-ci-test-pipeline-'. (string) getenv('GITHUB_REF')
+            $this->prefix . '-ci-test-pipeline-' . (string) getenv('GITHUB_REF')
         );
 
         try {
@@ -59,7 +60,7 @@ final class BuildTest extends AbstractTestCase
             $this->organization,
             [
                 'name' => $pipelineSlug,
-                'repository' => 'git@github.com:'.$repository.'.git',
+                'repository' => 'git@github.com:' . $repository . '.git',
                 'steps' => [
                     [
                         'type' => 'script',

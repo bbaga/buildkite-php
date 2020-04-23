@@ -1,25 +1,26 @@
 <?php
+
 declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Api\Rest;
 
-use bbaga\BuildkiteApi\Api\RestApi;
+use bbaga\BuildkiteApi\Api\RestApiInterface;
 
 final class Pipeline
 {
     /**
-     * @var RestApi
+     * @var RestApiInterface
      */
     private $api;
 
-    public function __construct(RestApi $api)
+    public function __construct(RestApiInterface $api)
     {
         $this->api = $api;
     }
 
-    public function list(string $organizationSlug): array
+    public function list(string $organizationSlug, array $queryParameters = []): array
     {
-        $response = $this->api->get(sprintf('organizations/%s/pipelines', $organizationSlug));
+        $response = $this->api->get(sprintf('organizations/%s/pipelines', $organizationSlug), ['query' => $queryParameters]);
 
         return $this->api->getResponseBody($response);
     }
