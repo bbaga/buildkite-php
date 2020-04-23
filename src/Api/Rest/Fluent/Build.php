@@ -345,9 +345,14 @@ final class Build
         $this->finishedAt = (string)($map['finished_at'] ?? '');
         $this->metaData = (array)($map['meta_data'] ?? []);
         $this->pullRequest = (array)($map['pull_request'] ?? []);
-        $this->pipeline = $map['pipeline'] instanceof Pipeline
-            ? $map['pipeline']
-            : new Pipeline($this->api, $this->organizationSlug, (array)$map['pipeline']);
+
+        if (($map['pipeline'] ?? null) instanceof Pipeline) {
+            /** @var Pipeline pipeline */
+            $this->pipeline = $map['pipeline'];
+        } else {
+            $this->pipeline = new Pipeline($this->api, $this->organizationSlug, (array) $map['pipeline']);
+        }
+
         $this->jobs = [];
 
         /** @var array $job */

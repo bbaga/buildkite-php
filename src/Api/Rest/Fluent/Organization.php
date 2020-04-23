@@ -159,6 +159,11 @@ final class Organization
         return new Emojis($this->api, $this->getSlug());
     }
 
+    public function getAgents(): Agents
+    {
+        return new Agents($this->api, $this->getSlug());
+    }
+
     private function populate(array $map): void
     {
         $this->id = (string) ($map['id'] ?? '');

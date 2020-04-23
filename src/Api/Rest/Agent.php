@@ -18,10 +18,10 @@ final class Agent
         $this->api = $api;
     }
 
-    public function list(string $organizationSlug, array $queryParameters): array
+    public function list(string $organizationSlug, array $queryParameters = []): array
     {
         $response = $this->api->get(
-            sprintf('organizations/%s/builds', $organizationSlug),
+            sprintf('organizations/%s/agents', $organizationSlug),
             ['query' => $queryParameters]
         );
 

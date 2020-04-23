@@ -42,27 +42,31 @@ final class Builds
         $this->builds = $builds;
     }
 
-    /** @return Build[] */
-    public function get(): array
+    /**
+     * @param array $queryParameters
+     * @return Build[]
+     */
+    public function get(array $queryParameters = []): array
     {
         if (count($this->builds) === 0) {
-            $this->builds = $this->fetch();
+            $this->builds = $this->fetch($queryParameters);
         }
 
         return $this->builds;
     }
 
     /**
+     * @param array $queryParameters
      * @return Build[]
      */
-    public function fetch(int $limit = 500, int $page = 1): array
+    public function fetch(array $queryParameters = []): array
     {
         $api = $this->api->build();
 
         if ($this->pipelineSlug === null) {
-            $builds = $api->getByOrganization($this->organizationSlug, ['page' => $page, 'per_page' => $limit]);
+            $builds = $api->getByOrganization($this->organizationSlug, $queryParameters);
         } else {
-            $builds = $api->getByPipeline($this->organizationSlug, $this->pipelineSlug, ['page' => $page, 'per_page' => $limit]);
+            $builds = $api->getByPipeline($this->organizationSlug, $this->pipelineSlug, $queryParameters);
         }
 
         $list = [];

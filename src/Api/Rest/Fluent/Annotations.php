@@ -49,23 +49,27 @@ final class Annotations
         $this->annotations = $annotations;
     }
 
-    /** @return Annotation[] */
-    public function get(): array
+    /**
+     * @param array $queryParameters
+     * @return Annotation[]
+     */
+    public function get(array $queryParameters = []): array
     {
         if (count($this->annotations) === 0) {
-            $this->annotations = $this->fetch();
+            $this->annotations = $this->fetch($queryParameters);
         }
 
         return $this->annotations;
     }
 
     /**
+     * @param array $queryParameters
      * @return Annotation[]
      */
-    public function fetch(int $limit = 500, int $page = 1): array
+    public function fetch(array $queryParameters = []): array
     {
         $api = $this->api->annotation();
-        $annotations = $api->list($this->organizationSlug, $this->pipelineSlug, $this->buildNumber, ['page' => $page, 'per_page' => $limit]);
+        $annotations = $api->list($this->organizationSlug, $this->pipelineSlug, $this->buildNumber, $queryParameters);
 
         $list = [];
 
