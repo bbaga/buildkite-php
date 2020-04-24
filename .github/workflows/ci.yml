@@ -27,7 +27,7 @@ jobs:
         run: "vendor/bin/psalm --no-progress --shepherd --show-info=false --stats"
 
       - name: "Generate unit test coverage report"
-          run: "vendor/bin/phpunit --testsuite unit --coverage-xml php-unit-coverage.xml"
+        run: "vendor/bin/phpunit --testsuite unit --coverage-xml php-unit-coverage.xml"
 
       - uses: codecov/codecov-action@v1
         with:
