@@ -37,7 +37,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./php-unit-coverage.xml # optional
-          flags: phpunit,unit # optional
+          flags: phpunit,unit,integration # optional
           fail_ci_if_error: true # optional (default = false)
 
   phpunit-matrix:
