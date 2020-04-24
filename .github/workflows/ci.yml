@@ -30,6 +30,18 @@ jobs:
     name: "PHPUnit Coverage report"
     runs-on: "ubuntu-latest"
     steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP with extensions"
+        uses: "shivammathur/setup-php@v1"
+        with:
+          php-version: "7.4"
+          coverage: "pcov"
+
+      - name: "Installing dependencies"
+        run: "composer install"
+        
       - name: "Generate unit test coverage report"
         run: "vendor/bin/phpunit --testsuite unit,integration --coverage-clover php-unit-coverage.xml"
         env:
