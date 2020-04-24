@@ -2,6 +2,7 @@
 
 ![](https://github.com/bbaga/buildkite-php/workflows/Continous%20Integration/badge.svg)
 ![](https://shepherd.dev/github/bbaga/buildkite-php/coverage.svg)
+![](https://codecov.io/gh/bbaga/buildkite-php/branch/master/graph/badge.svg)
 
 **Documentations is work in progress.**
 
