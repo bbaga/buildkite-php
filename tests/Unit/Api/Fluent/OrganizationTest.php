@@ -65,6 +65,24 @@ final class OrganizationTest extends TestCase
         $this->assertEquals($orgData['created_at'], $org->getCreatedAt());
     }
 
+    public function testCreatePipeline(): void
+    {
+        $pipelineData = ['name' => 'My Pipeline'];
+        $restApi = $this->prophesize(RestApiInterface::class);
+        $organization = new Organization($restApi->reveal(), ['slug' => 'my-org']);
+
+        $pipelineApi = $this->prophesize(PipelineInterface::class);
+        $pipelineApi->create(
+            Argument::exact($organization->getSlug()),
+            Argument::exact($pipelineData)
+        )->willReturn(['slug' => 'my-pipeline'])
+            ->shouldBeCalled();
+
+        $restApi->pipeline()->willReturn($pipelineApi->reveal());
+
+        $organization->createPipeline($pipelineData);
+    }
+
     public function testGetPipelines(): void
     {
         $orgSlug = 'my-org';
@@ -72,7 +90,7 @@ final class OrganizationTest extends TestCase
         $restApi = $this->prophesize(RestApiInterface::class);
 
         $pipelineApi = $this->prophesize(PipelineInterface::class);
-        $pipelineApi->list(Argument::exact($orgSlug), Argument::any())->willReturn([[]]);
+        $pipelineApi->list(Argument::exact($orgSlug), Argument::any())->willReturn([['slug' => 'my-pipeline']]);
         $restApi->pipeline()->willReturn($pipelineApi->reveal());
 
         $org = new Organization($restApi->reveal(), ['slug' => $orgSlug]);

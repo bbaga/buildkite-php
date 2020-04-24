@@ -13,36 +13,37 @@ composer require bbaga/buildkite-php
 
 ## Usage
 
-[Direct API calls](#direct-api-calls)
-* [Organizations API](#organizations-api)
-  * [List the ](#list-the-organizations)
-  * [Get a specific organization](#get-a-specific-organization)
-* [Pipelines API](#pipelines-api)
-  * [List pipelines in an organization](#list-pipelines-in-an-organizations)
-  * [Get a specific pipeline](#get-a-specific-pipeline)
-  * [Create a pipeline](#create-a-pipeline)
-  * [Update a pipeline](#update-a-pipeline)
-  * [Delete a pipeline](#delete-a-pipelne)
-* [Builds API](#builds-api)
-  * [List all builds across all the organizations](#list-all-builds-across-all-the-organizations)
-  * [Get a specific build](#get-a-specific-build)
-  * [Get builds in an organization](#get-builds-in-an-organization)
-  * [Get builds for a pipeline](#get-builds-for-a-pipeline)
-  * [Create new build](#create-a-new-build)
-  * [Cancel a running build](#cancel-a-running-build)
-  * [Restarting a build](#restarting-a-build)
-* [Jobs API](#jobs-api)
-* [Artifacts API](#artifacts-api)
-* [Agents API](#agents-api)
-* [Annotations API](#annotations-api)
-* [Users API](#users-api)
-* [Emojis API](#emojis-api)
+* [Interacting with Buildkite's REST API](#interacting-with-buildkites-rest-api)
+  * [Example of traversing through resources](#example-of-traversing-through-resources)
+  * [Getting straight to the point](#getting-straight-to-the-point)
+* [Direct API calls](#direct-api-calls)
+  * [Organizations API](#organizations-api)
+    * [List the ](#list-the-organizations)
+    * [Get a specific organization](#get-a-specific-organization)
+  * [Pipelines API](#pipelines-api)
+    * [List pipelines in an organization](#list-pipelines-in-an-organizations)
+    * [Get a specific pipeline](#get-a-specific-pipeline)
+    * [Create a pipeline](#create-a-pipeline)
+    * [Update a pipeline](#update-a-pipeline)
+    * [Delete a pipeline](#delete-a-pipelne)
+  * [Builds API](#builds-api)
+    * [List all builds across all the organizations](#list-all-builds-across-all-the-organizations)
+    * [Get a specific build](#get-a-specific-build)
+    * [Get builds in an organization](#get-builds-in-an-organization)
+    * [Get builds for a pipeline](#get-builds-for-a-pipeline)
+    * [Create new build](#create-a-new-build)
+    * [Cancel a running build](#cancel-a-running-build)
+    * [Restarting a build](#restarting-a-build)
+  * [Jobs API](#jobs-api)
+  * [Artifacts API](#artifacts-api)
+  * [Agents API](#agents-api)
+  * [Annotations API](#annotations-api)
+  * [Users API](#users-api)
+  * [Emojis API](#emojis-api)
 
 ### Setting up the RestApi object
 ```php
 use bbaga\BuildkiteApi\Api\RestApi;
-
-require __DIR__.'/vendor/autoload.php';
 
 /** @var \BuildkiteApi\Api\HttpClientInterface $client */
 $client = new MyHttpClient(); 
@@ -52,6 +53,72 @@ $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 
 `\BuildkiteApi\Api\HttpClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
 `\BuildkiteApi\Api\HttpClientInterface` is available in the [`bbaga/buildkite-php-http-interface`](https://github.com/bbaga/buildkite-php-http-interface) package.
+
+### Interacting with Buildkite's REST API
+
+#### Example of traversing through resources
+```php
+use bbaga\BuildkiteApi\Api\GuzzleClient;
+use bbaga\BuildkiteApi\Api\Rest\Fluent;
+use bbaga\BuildkiteApi\Api\RestApi;
+
+$client = new GuzzleClient();
+$api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
+
+/** Getting all the organizations that are visible with the TOKEN */
+/** @var Fluent\Organization[] $organizations */
+$organizations = (new Fluent\Organizations($api))->get();
+
+/** @var Fluent\Organization $organization */
+$organization = $organizations[0];
+
+/** @var Fluent\Pipeline $pipelines */
+$pipelines = $organization->getPipelines();
+
+/** @var Fluent\Pipeline $pipeline */
+$pipeline = $pipelines[0];
+
+/** @var Fluent\Build[] $builds */
+$builds = $pipeline->getBuilds();
+
+/** @var Fluent\Build $build */
+$build = $builds[0];
+
+/** @var Fluent\Job[] $jobs */
+$jobs = $build->getJobs();
+
+/** @var Fluent\Emoji[] $emojis */
+$emojis = $organizations[0]->getEmojis();
+
+/** @var Fluent\Agent[] $emojis */
+$agents = $organizations[0]->getAgents();
+```
+
+#### Getting straight to the point
+
+Fetching data for a specific build without traversing through the hierarchy.
+
+```php
+use bbaga\BuildkiteApi\Api\GuzzleClient;
+use bbaga\BuildkiteApi\Api\Rest\Fluent;
+use bbaga\BuildkiteApi\Api\RestApi;
+
+$client = new GuzzleClient();
+$api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
+
+/**
+ * Builds are identified by the follwoing three values 
+ */
+$organizationSlug = 'my-org';
+$pipelineSlug = 'my-pipeline';
+$buildNumber = 23;
+
+$organization = new Fluent\Organization($api, ['slug' => $organizationSlug]);
+$pipeline = new Fluent\Pipeline($api, $organization, ['slug' => $pipelineSlug]);
+$build = new Fluent\Build($api, $organization, ['number' => $buildNumber, 'pipeline' => $pipeline]);
+
+$build->fetch()->getJobs();
+```
 
 ### Direct API calls
 

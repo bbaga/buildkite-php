@@ -119,7 +119,7 @@ final class PipelineTest extends TestCase
             Argument::exact($orgSlug),
             Argument::exact($pipelineSlug),
             Argument::any()
-        )->willReturn([[]]);
+        )->willReturn([['number' => 1]]);
 
         $restApi->build()->willReturn($buildApi->reveal());
 
@@ -134,30 +134,30 @@ final class PipelineTest extends TestCase
         $this->assertSame($pipeline, $builds[0]->getPipeline());
     }
 
-    public function testCreate(): void
+    public function testCreateBuild(): void
     {
-        $pipelineData = ['name' => 'My Pipeline'];
-        $organization = new Organization(
-            $this->prophesize(RestApiInterface::class)->reveal(),
-            ['slug' => 'my-org']
-        );
+        $orgSlug = 'my-org';
+        $pipelineSlug = 'my-pipeline';
 
         $restApi = $this->prophesize(RestApiInterface::class);
-        $pipelineApi = $this->prophesize(PipelineInterface::class);
-        $pipelineApi->create(
-            Argument::exact($organization->getSlug()),
-            Argument::exact($pipelineData)
-        )->willReturn([])
-            ->shouldBeCalled();
-
-        $restApi->pipeline()->willReturn($pipelineApi->reveal());
+        $buildApi = $this->prophesize(BuildInterface::class);
+        $restApi->build()->willReturn($buildApi->reveal());
         $restApiMock = $restApi->reveal();
 
         $pipeline = new Pipeline(
             $restApiMock,
-            $organization
+            new Organization($restApiMock, ['slug' => $orgSlug]),
+            ['slug' => $pipelineSlug]
         );
-        $pipeline->create($pipelineData);
+
+        $buildApi->create(
+            Argument::exact($orgSlug),
+            Argument::exact($pipelineSlug),
+            Argument::any()
+        )->willReturn(['number' => 1, 'pipeline' => $pipeline]);
+
+        $build = $pipeline->createBuild([]);
+        $this->assertSame($pipeline, $build->getPipeline());
     }
 
     public function testUpdate(): void

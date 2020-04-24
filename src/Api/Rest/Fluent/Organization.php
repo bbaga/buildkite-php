@@ -149,6 +149,16 @@ final class Organization
         return $this;
     }
 
+    public function createPipeline(array $data): Pipeline
+    {
+        $result = $this->api->pipeline()->create(
+            $this->getSlug(),
+            $data
+        );
+
+        return new Pipeline($this->api, $this, $result);
+    }
+
     /**
      * @return Pipeline[]
      */
