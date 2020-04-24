@@ -7,7 +7,6 @@ namespace bbaga\BuildkiteApi\Tests\Unit\Api;
 use bbaga\BuildkiteApi\Api\Rest\AgentInterface;
 use bbaga\BuildkiteApi\Api\Rest\EmojiInterface;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Organization;
-use bbaga\BuildkiteApi\Api\Rest\Fluent\Pipeline;
 use bbaga\BuildkiteApi\Api\Rest\OrganizationInterface;
 use bbaga\BuildkiteApi\Api\Rest\PipelineInterface;
 use bbaga\BuildkiteApi\Api\RestApiInterface;
