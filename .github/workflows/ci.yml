@@ -17,7 +17,18 @@ jobs:
           php-version: "7.4"
           coverage: "pcov"
 
-      - name: "Installing dependencies"
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-74
+        name: "Installing dependencies"
         run: "composer install"
 
       - name: "Run ecs"
@@ -39,9 +50,20 @@ jobs:
           php-version: "7.4"
           coverage: "pcov"
 
-      - name: "Installing dependencies"
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-74
+        name: "Installing dependencies"
         run: "composer install"
-        
+
       - name: "Generate unit test coverage report"
         run: "vendor/bin/phpunit --testsuite unit,integration --coverage-clover php-unit-coverage.xml"
         env:
@@ -68,7 +90,18 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v2"
 
-      - name: "Installing dependencies"
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}
+        name: "Installing dependencies"
         run: "composer install"
 
       - name: "Running unit tests"
