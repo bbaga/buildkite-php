@@ -59,12 +59,14 @@ final class BuildTest extends TestCase
     public function testFetch(array $buildData): void
     {
         $orgSlug = 'my-org';
+        /** @var array $pipelineData */
+        $pipelineData = $buildData['pipeline'];
 
         $restApi = $this->prophesize(RestApiInterface::class);
         $buildApi = $this->prophesize(BuildInterface::class);
         $buildApi->get(
             Argument::exact($orgSlug),
-            Argument::exact($buildData['pipeline']['slug']),
+            Argument::exact($pipelineData['slug']),
             Argument::exact($buildData['number'])
         )->willReturn($buildData);
         $restApi->build()->willReturn($buildApi->reveal());
@@ -100,7 +102,7 @@ final class BuildTest extends TestCase
         $this->assertInstanceOf(User::class, $build->getCreator());
         $this->assertInstanceOf(Pipeline::class, $build->getPipeline());
         $this->assertCount(1, $build->getJobs());
-        $this->assertEquals($buildData['pipeline']['slug'], $build->getPipelineSlug());
+        $this->assertEquals($pipelineData['slug'], $build->getPipelineSlug());
         $this->assertEquals($organization->getSlug(), $build->getOrganizationSlug());
     }
 }
