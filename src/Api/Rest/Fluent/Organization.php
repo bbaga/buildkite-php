@@ -58,7 +58,7 @@ final class Organization
      */
     private $createdAt;
 
-    public function __construct(RestApiInterface $api, array $map = [])
+    public function __construct(RestApiInterface $api, array $map)
     {
         $this->api = $api;
 
@@ -152,9 +152,9 @@ final class Organization
     /**
      * @return Pipeline[]
      */
-    public function getPipelines(): array
+    public function getPipelines(array $queryParameters = []): array
     {
-        $pipelines = $this->api->pipeline()->list($this->getSlug());
+        $pipelines = $this->api->pipeline()->list($this->getSlug(), $queryParameters);
 
         $list = [];
 

@@ -370,8 +370,8 @@ final class Build
     public function create(array $data): self
     {
         $result = $this->api->build()->create(
-            $this->organization->getSlug(),
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $data
         );
 
@@ -383,8 +383,8 @@ final class Build
     public function cancel(): self
     {
         $result = $this->api->build()->cancel(
-            $this->organization->getSlug(),
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $this->getNumber()
         );
 
@@ -396,8 +396,8 @@ final class Build
     public function rebuild(): self
     {
         $result = $this->api->build()->rebuild(
-            $this->organization->getSlug(),
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $this->getNumber()
         );
 
@@ -408,7 +408,11 @@ final class Build
 
     public function fetch(): self
     {
-        $response = $this->api->build()->get($this->organization->getSlug(), $this->pipeline->getSlug(), $this->getNumber());
+        $response = $this->api->build()->get(
+            $this->getOrganization()->getSlug(),
+            $this->getPipelineSlug(),
+            $this->getNumber()
+        );
         $this->populate($response);
 
         return $this;

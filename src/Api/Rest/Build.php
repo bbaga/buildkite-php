@@ -6,7 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 
-final class Build
+final class Build implements BuildInterface
 {
     /**
      * @var RestApiInterface

@@ -6,7 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 
-final class Organization
+final class Organization implements OrganizationInterface
 {
     /**
      * @var RestApiInterface

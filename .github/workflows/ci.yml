@@ -26,6 +26,16 @@ jobs:
       - name: "Run psalm"
         run: "vendor/bin/psalm --no-progress --shepherd --show-info=false --stats"
 
+      - name: "Generate unit test coverage report"
+          run: "vendor/bin/phpunit --testsuite unit --coverage-xml php-unit-coverage.xml"
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          file: ./php-unit-coverage.xml # optional
+          flags: phpunit-unit # optional
+          fail_ci_if_error: true # optional (default = false)
+
   phpunit:
     name: "PHPUnit"
     runs-on: ${{ matrix.os }}

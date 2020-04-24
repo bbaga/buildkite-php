@@ -100,7 +100,7 @@ final class Agent
 
         if (!isset($map['id']) || !is_string($map['id'])) {
             throw new \InvalidArgumentException(
-                'The "id" (representing the job id) must be an string value'
+                'The "id" (representing the agent id) must be an string value'
             );
         }
         $this->populate($map);

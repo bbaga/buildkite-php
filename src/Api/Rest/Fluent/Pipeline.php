@@ -388,6 +388,7 @@ final class Pipeline
 
         /** @var array $build */
         foreach ($builds as $build) {
+            $build['pipeline'] = $this;
             $list[] = new Build($this->api, $this->organization, $build);
         }
 

@@ -6,7 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 
-final class Agent
+final class Agent implements AgentInterface
 {
     /**
      * @var RestApiInterface
