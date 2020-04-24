@@ -153,6 +153,10 @@ final class Pipeline
         $this->api = $api;
         $this->organization = $organization;
 
+        if (!isset($map['slug']) || !is_string($map['slug'])) {
+            throw new \InvalidArgumentException('The "slug" (representing the pipeline\'s slug) must be a string value');
+        }
+
         $this->populate($map);
     }
 
@@ -404,18 +408,6 @@ final class Pipeline
         }
 
         return $list;
-    }
-
-    public function create(array $data): self
-    {
-        $result = $this->api->pipeline()->create(
-            $this->organization->getSlug(),
-            $data
-        );
-
-        $this->populate($result);
-
-        return $this;
     }
 
     public function update(array $data): self
