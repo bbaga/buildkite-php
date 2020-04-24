@@ -119,7 +119,7 @@ final class PipelineTest extends TestCase
             Argument::exact($orgSlug),
             Argument::exact($pipelineSlug),
             Argument::any()
-        )->willReturn([[]]);
+        )->willReturn([['number' => 1]]);
 
         $restApi->build()->willReturn($buildApi->reveal());
 

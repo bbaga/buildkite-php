@@ -6,6 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest\Fluent;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 use function is_array;
+use function is_int;
 
 final class Build
 {
@@ -128,6 +129,10 @@ final class Build
     {
         $this->api = $api;
         $this->organization = $organization;
+
+        if (!isset($map['number']) || !is_int($map['number'])) {
+            throw new \InvalidArgumentException('The "number" must be an integer representing the build number');
+        }
 
         if (!isset($map['pipeline']) || (!$map['pipeline'] instanceof Pipeline && !is_array($map['pipeline']))) {
             throw new \InvalidArgumentException('The "pipeline" must be an array or an instance of ' . Pipeline::class);
@@ -365,19 +370,6 @@ final class Build
         }
 
         return $artifacts;
-    }
-
-    public function create(array $data): self
-    {
-        $result = $this->api->build()->create(
-            $this->getOrganizationSlug(),
-            $this->getPipelineSlug(),
-            $data
-        );
-
-        $this->populate($result);
-
-        return $this;
     }
 
     public function cancel(): self

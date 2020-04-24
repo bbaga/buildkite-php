@@ -372,6 +372,17 @@ final class Pipeline
         return $this->organization;
     }
 
+    public function createBuild(array $data): Build
+    {
+        $result = $this->api->build()->create(
+            $this->getOrganization()->getSlug(),
+            $this->getSlug(),
+            $data
+        );
+
+        return new Build($this->api, $this->getOrganization(), $result);
+    }
+
     /**
      * @return Build[]
      */

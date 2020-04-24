@@ -24,7 +24,7 @@ final class BuildTest extends TestCase
     public function buildDataProvider(): array
     {
         $data = [
-            'number' => '12',
+            'number' => 12,
             'id' => '123fr4wsdfrew',
             'url' => 'url',
             'web_url' => 'web-url',
