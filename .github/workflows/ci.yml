@@ -4,7 +4,7 @@ on:
   - "push"
 
 jobs:
-  type-coverage-report:
+  static-analysis:
     name: "Static Analysis"
     runs-on: "ubuntu-latest"
     steps:
@@ -17,6 +17,18 @@ jobs:
           php-version: "7.4"
           coverage: "pcov"
 
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-74
+
       - name: "Installing dependencies"
         run: "composer install"
 
@@ -26,18 +38,50 @@ jobs:
       - name: "Run psalm"
         run: "vendor/bin/psalm --no-progress --shepherd --show-info=false --stats"
 
+  phpunit-report:
+    name: "PHPUnit Coverage report"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP with extensions"
+        uses: "shivammathur/setup-php@v1"
+        with:
+          php-version: "7.4"
+          coverage: "pcov"
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-74
+
+      - name: "Installing dependencies"
+        run: "composer install"
+
       - name: "Generate unit test coverage report"
-        run: "vendor/bin/phpunit --testsuite unit --coverage-clover php-unit-coverage.xml"
+        run: "vendor/bin/phpunit --testsuite unit,integration --coverage-clover php-unit-coverage.xml"
+        env:
+          BK_TEST_TOKEN: ${{ secrets.BK_TEST_TOKEN }}
+          BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
+          BK_TEST_PREFIX: ${{ secrets.BK_TEST_PREFIX }}
 
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./php-unit-coverage.xml # optional
-          flags: phpunit,unit # optional
+          flags: phpunit,unit,integration # optional
           fail_ci_if_error: true # optional (default = false)
 
-  phpunit:
-    name: "PHPUnit"
+  phpunit-matrix:
+    name: "PHPUnit Matrix"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -47,6 +91,18 @@ jobs:
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}
 
       - name: "Installing dependencies"
         run: "composer install"
