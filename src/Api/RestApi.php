@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace bbaga\BuildkiteApi\Api;
 
 use bbaga\BuildkiteApi\Api\Rest\Agent;
+use bbaga\BuildkiteApi\Api\Rest\AgentInterface;
 use bbaga\BuildkiteApi\Api\Rest\Annotation;
 use bbaga\BuildkiteApi\Api\Rest\Artifact;
 use bbaga\BuildkiteApi\Api\Rest\Build;
+use bbaga\BuildkiteApi\Api\Rest\BuildInterface;
 use bbaga\BuildkiteApi\Api\Rest\Emoji;
+use bbaga\BuildkiteApi\Api\Rest\EmojiInterface;
 use bbaga\BuildkiteApi\Api\Rest\Job;
 use bbaga\BuildkiteApi\Api\Rest\Organization;
+use bbaga\BuildkiteApi\Api\Rest\OrganizationInterface;
 use bbaga\BuildkiteApi\Api\Rest\Pipeline;
+use bbaga\BuildkiteApi\Api\Rest\PipelineInterface;
 use bbaga\BuildkiteApi\Api\Rest\User;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -104,17 +109,17 @@ final class RestApi implements RestApiInterface
         return $this->client->send($this->addAuthorizationHeader($request));
     }
 
-    public function organization(): Organization
+    public function organization(): OrganizationInterface
     {
         return new Organization($this);
     }
 
-    public function pipeline(): Pipeline
+    public function pipeline(): PipelineInterface
     {
         return new Pipeline($this);
     }
 
-    public function build(): Build
+    public function build(): BuildInterface
     {
         return new Build($this);
     }
@@ -124,7 +129,7 @@ final class RestApi implements RestApiInterface
         return new User($this);
     }
 
-    public function emoji(): Emoji
+    public function emoji(): EmojiInterface
     {
         return new Emoji($this);
     }
@@ -144,7 +149,7 @@ final class RestApi implements RestApiInterface
         return new Job($this);
     }
 
-    public function agent(): Agent
+    public function agent(): AgentInterface
     {
         return new Agent($this);
     }

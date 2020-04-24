@@ -6,7 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 
-final class Emoji
+final class Emoji implements EmojiInterface
 {
     /**
      * @var RestApiInterface

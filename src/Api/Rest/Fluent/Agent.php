@@ -14,9 +14,9 @@ final class Agent
     private $api;
 
     /**
-     * @var string
+     * @var Organization
      */
-    private $organizationSlug;
+    private $organization;
 
     /**
      * @var string
@@ -93,14 +93,14 @@ final class Agent
      */
     private $metaData;
 
-    public function __construct(RestApiInterface $api, string $organizationSlug, array $map = [])
+    public function __construct(RestApiInterface $api, Organization $organization, array $map = [])
     {
         $this->api = $api;
-        $this->organizationSlug = $organizationSlug;
+        $this->organization = $organization;
 
         if (!isset($map['id']) || !is_string($map['id'])) {
             throw new \InvalidArgumentException(
-                'The "id" (representing the job id) must be an string value'
+                'The "id" (representing the agent id) must be an string value'
             );
         }
         $this->populate($map);
@@ -228,7 +228,7 @@ final class Agent
 
     public function stop(bool $force = false): void
     {
-        $this->api->agent()->stop($this->organizationSlug, $this->getId(), $force);
+        $this->api->agent()->stop($this->organization->getSlug(), $this->getId(), $force);
     }
 
     private function populate(array $map): void
@@ -259,11 +259,20 @@ final class Agent
             );
 
             if (isset($map['job']['id'], $matches['pipeline'], $matches['buildNumber'])) {
+                $pipeline = new Pipeline($this->api, $this->organization, ['slug' => $matches['pipeline']]);
+
+                $build = new Build(
+                    $this->api,
+                    $this->organization,
+                    [
+                        'number' => $matches['buildNumber'],
+                        'pipeline' => $pipeline
+                    ]
+                );
+
                 $this->job = new Job(
                     $this->api,
-                    $this->organizationSlug,
-                    $matches['pipeline'],
-                    (int) $matches['buildNumber'],
+                    $build,
                     (array) $map['job']
                 );
             }

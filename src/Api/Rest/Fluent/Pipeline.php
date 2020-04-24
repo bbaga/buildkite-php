@@ -14,9 +14,9 @@ final class Pipeline
     private $api;
 
     /**
-     * @var string
+     * @var Organization
      */
-    private $organizationSlug;
+    private $organization;
 
     /**
      * @var string
@@ -148,10 +148,10 @@ final class Pipeline
      */
     private $steps;
 
-    public function __construct(RestApiInterface $api, string $organizationSlug, array $map = [])
+    public function __construct(RestApiInterface $api, Organization $organization, array $map = [])
     {
         $this->api = $api;
-        $this->organizationSlug = $organizationSlug;
+        $this->organization = $organization;
 
         $this->populate($map);
     }
@@ -364,15 +364,41 @@ final class Pipeline
         return $this->configuration;
     }
 
-    public function getBuilds(): Builds
+    /**
+     * @return Organization
+     */
+    public function getOrganization(): Organization
     {
-        return new Builds($this->api, $this->organizationSlug, $this->getSlug());
+        return $this->organization;
+    }
+
+    /**
+     * @return Build[]
+     */
+    public function getBuilds(array $queryParameters = []): array
+    {
+        $api = $this->api->build();
+        $builds = $api->getByPipeline(
+            $this->organization->getSlug(),
+            $this->getSlug(),
+            $queryParameters
+        );
+
+        $list = [];
+
+        /** @var array $build */
+        foreach ($builds as $build) {
+            $build['pipeline'] = $this;
+            $list[] = new Build($this->api, $this->organization, $build);
+        }
+
+        return $list;
     }
 
     public function create(array $data): self
     {
         $result = $this->api->pipeline()->create(
-            $this->organizationSlug,
+            $this->organization->getSlug(),
             $data
         );
 
@@ -384,7 +410,7 @@ final class Pipeline
     public function update(array $data): self
     {
         $result = $this->api->pipeline()->update(
-            $this->organizationSlug,
+            $this->organization->getSlug(),
             $this->getSlug(),
             $data
         );
@@ -397,14 +423,14 @@ final class Pipeline
     public function delete(): void
     {
         $this->api->pipeline()->delete(
-            $this->organizationSlug,
+            $this->organization->getSlug(),
             $this->getSlug()
         );
     }
 
     public function fetch(string $slug = null): self
     {
-        $response = $this->api->pipeline()->get($this->organizationSlug, $slug ?? $this->getSlug());
+        $response = $this->api->pipeline()->get($this->organization->getSlug(), $slug ?? $this->getSlug());
         $this->populate($response);
 
         return $this;

@@ -15,9 +15,9 @@ final class Build
     private $api;
 
     /**
-     * @var string
+     * @var Organization
      */
-    private $organizationSlug;
+    private $organization;
 
     /**
      * @var int
@@ -124,10 +124,10 @@ final class Build
      */
     private $jobs;
 
-    public function __construct(RestApiInterface $api, string $organizationSlug, array $map = [])
+    public function __construct(RestApiInterface $api, Organization $organization, array $map = [])
     {
         $this->api = $api;
-        $this->organizationSlug = $organizationSlug;
+        $this->organization = $organization;
 
         if (!isset($map['pipeline']) || (!$map['pipeline'] instanceof Pipeline && !is_array($map['pipeline']))) {
             throw new \InvalidArgumentException('The "pipeline" must be an array or an instance of ' . Pipeline::class);
@@ -297,6 +297,30 @@ final class Build
     }
 
     /**
+     * @return string
+     */
+    public function getPipelineSlug(): string
+    {
+        return $this->pipeline->getSlug();
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization(): Organization
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationSlug(): string
+    {
+        return $this->organization->getSlug();
+    }
+
+    /**
      * @return Job[]
      */
     public function getJobs(): array
@@ -304,16 +328,50 @@ final class Build
         return $this->jobs;
     }
 
-    public function getAnnotations(): Annotations
+    /**
+     * @return Annotation[]
+     */
+    public function getAnnotations(array $queryParameters = []): array
     {
-        return new Annotations($this->api, $this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber());
+        $api = $this->api->annotation();
+        $annotations = $api->list($this->getOrganizationSlug(), $this->getPipelineSlug(), $this->getNumber(), $queryParameters);
+
+        $list = [];
+
+        /** @var array $annotation */
+        foreach ($annotations as $annotation) {
+            $list[] = new Annotation($annotation);
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return Artifact[]
+     */
+    public function getArtifacts(): array
+    {
+        $result = $this->api->artifact()->getByBuild(
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
+            $this->getNumber()
+        );
+
+        $artifacts = [];
+
+        /** @var array $artifact */
+        foreach ($result as $artifact) {
+            $artifacts[] = new Artifact($this->api, $this, $artifact);
+        }
+
+        return $artifacts;
     }
 
     public function create(array $data): self
     {
         $result = $this->api->build()->create(
-            $this->organizationSlug,
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $data
         );
 
@@ -325,8 +383,8 @@ final class Build
     public function cancel(): self
     {
         $result = $this->api->build()->cancel(
-            $this->organizationSlug,
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $this->getNumber()
         );
 
@@ -338,8 +396,8 @@ final class Build
     public function rebuild(): self
     {
         $result = $this->api->build()->rebuild(
-            $this->organizationSlug,
-            $this->pipeline->getSlug(),
+            $this->getOrganizationSlug(),
+            $this->getPipelineSlug(),
             $this->getNumber()
         );
 
@@ -350,7 +408,11 @@ final class Build
 
     public function fetch(): self
     {
-        $response = $this->api->build()->get($this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber());
+        $response = $this->api->build()->get(
+            $this->getOrganization()->getSlug(),
+            $this->getPipelineSlug(),
+            $this->getNumber()
+        );
         $this->populate($response);
 
         return $this;
@@ -394,14 +456,14 @@ final class Build
             /** @var Pipeline $pipelineData */
             $this->pipeline = $pipelineData;
         } else {
-            $this->pipeline = new Pipeline($this->api, $this->organizationSlug, (array)$pipelineData);
+            $this->pipeline = new Pipeline($this->api, $this->organization, (array)$pipelineData);
         }
 
         $this->jobs = [];
 
         /** @var array $job */
         foreach ((array)($map['jobs'] ?? []) as $job) {
-            $this->jobs[] = new Job($this->api, $this->organizationSlug, $this->pipeline->getSlug(), $this->getNumber(), $job);
+            $this->jobs[] = new Job($this->api, $this, $job);
         }
     }
 }

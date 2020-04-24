@@ -58,21 +58,30 @@ final class Artifact
         return $this->api->getResponseBody($response);
     }
 
-    public function getByBuild(string $organizationSlug, string $pipelineSlug, int $buildNumber): array
-    {
+    public function getByBuild(
+        string $organizationSlug,
+        string $pipelineSlug,
+        int $buildNumber,
+        array $queryParameters = []
+    ): array {
         $uri = sprintf(
             'organizations/%s/pipelines/%s/builds/%d/artifacts',
             $organizationSlug,
             $pipelineSlug,
             $buildNumber
         );
-        $response = $this->api->get($uri);
+        $response = $this->api->get($uri, $queryParameters);
 
         return $this->api->getResponseBody($response);
     }
 
-    public function getByJob(string $organizationSlug, string $pipelineSlug, int $buildNumber, string $jobId): array
-    {
+    public function getByJob(
+        string $organizationSlug,
+        string $pipelineSlug,
+        int $buildNumber,
+        string $jobId,
+        array $queryParameters = []
+    ): array {
         $uri = sprintf(
             'organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts',
             $organizationSlug,
@@ -80,8 +89,27 @@ final class Artifact
             $buildNumber,
             $jobId
         );
-        $response = $this->api->get($uri);
+        $response = $this->api->get($uri, $queryParameters);
 
         return $this->api->getResponseBody($response);
+    }
+
+    public function delete(
+        string $organizationSlug,
+        string $pipelineSlug,
+        int $buildNumber,
+        string $jobId,
+        string $artifactId
+    ): void {
+        $uri = sprintf(
+            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/artifacts/%s',
+            $organizationSlug,
+            $pipelineSlug,
+            $buildNumber,
+            $jobId,
+            $artifactId
+        );
+
+        $this->api->delete($uri);
     }
 }
