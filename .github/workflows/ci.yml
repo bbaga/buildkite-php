@@ -29,9 +29,9 @@ jobs:
       - name: "Generate unit test coverage report"
         run: "vendor/bin/phpunit --testsuite unit,integration --coverage-clover php-unit-coverage.xml"
         env:
-          - BK_TEST_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          - BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
-          - BK_TEST_PREFIX: ${{ secrets.BK_TEST_PREFIX }}
+          BK_TEST_TOKEN: ${{ secrets.BK_TEST_TOKEN }}
+          BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
+          BK_TEST_PREFIX: ${{ secrets.BK_TEST_PREFIX }}
 
       - uses: codecov/codecov-action@v1
         with:
