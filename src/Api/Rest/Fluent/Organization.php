@@ -177,6 +177,23 @@ final class Organization
     }
 
     /**
+     * @return Build[]
+     */
+    public function getBuilds(array $queryParameters = []): array
+    {
+        $builds = $this->api->build()->getByOrganization($this->getSlug(), $queryParameters);
+
+        $list = [];
+
+        /** @var array $build */
+        foreach ($builds as $build) {
+            $list[] = new Build($this->api, $this, $build);
+        }
+
+        return $list;
+    }
+
+    /**
      * @return Emoji[]
      */
     public function getEmojis(): array

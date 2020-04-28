@@ -28,7 +28,7 @@ final class BuildTest extends AbstractTestCase
      */
     public function testGetByOrganization(): void
     {
-        $list = $this->api->build()->getByOrganization($this->organization);
+        $list = $this->api->build()->getByOrganization($this->organizationSlug);
         $this->assertIsArray($list);
     }
 
@@ -44,8 +44,8 @@ final class BuildTest extends AbstractTestCase
         );
 
         try {
-            $pipelineApi->get($this->organization, $pipelineSlug);
-            $pipelineApi->delete($this->organization, $pipelineSlug);
+            $pipelineApi->get($this->organizationSlug, $pipelineSlug);
+            $pipelineApi->delete($this->organizationSlug, $pipelineSlug);
         } catch (ClientException $e) {
             $response = $e->getResponse();
 
@@ -57,7 +57,7 @@ final class BuildTest extends AbstractTestCase
         }
 
         $pipeline = $pipelineApi->create(
-            $this->organization,
+            $this->organizationSlug,
             [
                 'name' => $pipelineSlug,
                 'repository' => 'git@github.com:' . $repository . '.git',
@@ -75,7 +75,7 @@ final class BuildTest extends AbstractTestCase
             /** @var string $pipelineSlug */
             $pipelineSlug = $pipeline['slug'];
 
-            $list = $this->api->build()->getByPipeline($this->organization, $pipelineSlug);
+            $list = $this->api->build()->getByPipeline($this->organizationSlug, $pipelineSlug);
             $this->assertIsArray($list);
 
             $buildSettings = [
@@ -85,7 +85,7 @@ final class BuildTest extends AbstractTestCase
             ];
 
             $build = $this->api->build()->create(
-                $this->organization,
+                $this->organizationSlug,
                 $pipelineSlug,
                 $buildSettings
             );
@@ -96,11 +96,11 @@ final class BuildTest extends AbstractTestCase
             /** @var int $buildNumber */
             $buildNumber = $build['number'];
 
-            $this->api->build()->get($this->organization, $pipelineSlug, $buildNumber);
-            $this->api->build()->cancel($this->organization, $pipelineSlug, $buildNumber);
-            $this->api->build()->rebuild($this->organization, $pipelineSlug, $buildNumber);
+            $this->api->build()->get($this->organizationSlug, $pipelineSlug, $buildNumber);
+            $this->api->build()->cancel($this->organizationSlug, $pipelineSlug, $buildNumber);
+            $this->api->build()->rebuild($this->organizationSlug, $pipelineSlug, $buildNumber);
         } finally {
-            $pipelineApi->delete($this->organization, $pipelineSlug);
+            $pipelineApi->delete($this->organizationSlug, $pipelineSlug);
         }
     }
 }

@@ -13,6 +13,6 @@ final class EmojiTest extends AbstractTestCase
 
     public function testList(): void
     {
-        $this->assertNotEmpty($this->api->emoji()->list($this->organization));
+        $this->assertNotEmpty($this->api->emoji()->list($this->organizationSlug));
     }
 }
