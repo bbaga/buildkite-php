@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace bbaga\BuildkiteApi\Api\Rest\Fluent;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
+use function is_string;
 
 final class Artifact
 {
@@ -76,6 +77,15 @@ final class Artifact
     {
         $this->api = $api;
         $this->build = $build;
+
+        if (!isset($map['id']) || !is_string($map['id'])) {
+            throw new \InvalidArgumentException('The "id" must be a string identifying the artifact');
+        }
+
+        if (!isset($map['job_id']) || !is_string($map['job_id'])) {
+            throw new \InvalidArgumentException('The "job_id" must be a string identifying the job that produced the artifact');
+        }
+
         $this->populate($map);
     }
 

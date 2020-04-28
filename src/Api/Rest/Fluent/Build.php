@@ -354,12 +354,13 @@ final class Build
     /**
      * @return Artifact[]
      */
-    public function getArtifacts(): array
+    public function getArtifacts(array $queryParameters = []): array
     {
         $result = $this->api->artifact()->getByBuild(
             $this->getOrganizationSlug(),
             $this->getPipelineSlug(),
-            $this->getNumber()
+            $this->getNumber(),
+            $queryParameters
         );
 
         $artifacts = [];

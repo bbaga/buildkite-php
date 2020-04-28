@@ -5,7 +5,9 @@ namespace bbaga\BuildkiteApi\Api;
 use bbaga\BuildkiteApi\Api\Rest\Agent;
 use bbaga\BuildkiteApi\Api\Rest\AgentInterface;
 use bbaga\BuildkiteApi\Api\Rest\Annotation;
+use bbaga\BuildkiteApi\Api\Rest\AnnotationInterface;
 use bbaga\BuildkiteApi\Api\Rest\Artifact;
+use bbaga\BuildkiteApi\Api\Rest\ArtifactInterface;
 use bbaga\BuildkiteApi\Api\Rest\Build;
 use bbaga\BuildkiteApi\Api\Rest\BuildInterface;
 use bbaga\BuildkiteApi\Api\Rest\Emoji;
@@ -42,9 +44,9 @@ interface RestApiInterface
 
     public function emoji(): EmojiInterface;
 
-    public function annotation(): Annotation;
+    public function annotation(): AnnotationInterface;
 
-    public function artifact(): Artifact;
+    public function artifact(): ArtifactInterface;
 
     public function job(): Job;
 

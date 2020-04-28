@@ -6,7 +6,7 @@ namespace bbaga\BuildkiteApi\Api\Rest;
 
 use bbaga\BuildkiteApi\Api\RestApiInterface;
 
-final class Annotation
+final class Annotation implements AnnotationInterface
 {
     /**
      * @var RestApiInterface
