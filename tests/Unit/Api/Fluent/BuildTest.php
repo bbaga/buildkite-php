@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Unit\Api;
 
+use bbaga\BuildkiteApi\Api\Rest\AnnotationInterface;
+use bbaga\BuildkiteApi\Api\Rest\ArtifactInterface;
 use bbaga\BuildkiteApi\Api\Rest\BuildInterface;
+use bbaga\BuildkiteApi\Api\Rest\Fluent\Annotation;
+use bbaga\BuildkiteApi\Api\Rest\Fluent\Artifact;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Build;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Organization;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Pipeline;
@@ -104,5 +108,140 @@ final class BuildTest extends TestCase
         $this->assertCount(1, $build->getJobs());
         $this->assertEquals($pipelineData['slug'], $build->getPipelineSlug());
         $this->assertEquals($organization->getSlug(), $build->getOrganizationSlug());
+    }
+
+    /**
+     * @param array<string, mixed> $buildData
+     * @dataProvider buildDataProvider
+     */
+    public function testCancel(array $buildData): void
+    {
+        $orgSlug = 'my-org';
+        /** @var array $pipelineData */
+        $pipelineData = $buildData['pipeline'];
+
+        $restApi = $this->prophesize(RestApiInterface::class);
+        $buildApi = $this->prophesize(BuildInterface::class);
+        $buildApi->cancel(
+            Argument::exact($orgSlug),
+            Argument::exact($pipelineData['slug']),
+            Argument::exact($buildData['number'])
+        )->willReturn($buildData);
+        $restApi->build()->willReturn($buildApi->reveal());
+        $restApiMock = $restApi->reveal();
+
+        $organization = new Organization($restApiMock, ['slug' => 'my-org']);
+
+        $build = new Build(
+            $restApiMock,
+            $organization,
+            $buildData
+        );
+        $build->cancel();
+
+        $this->assertEquals($buildData['url'], $build->getUrl());
+    }
+
+    /**
+     * @param array<string, mixed> $buildData
+     * @dataProvider buildDataProvider
+     */
+    public function testRebuild(array $buildData): void
+    {
+        $orgSlug = 'my-org';
+        /** @var array $pipelineData */
+        $pipelineData = $buildData['pipeline'];
+
+        $restApi = $this->prophesize(RestApiInterface::class);
+        $buildApi = $this->prophesize(BuildInterface::class);
+        $buildApi->rebuild(
+            Argument::exact($orgSlug),
+            Argument::exact($pipelineData['slug']),
+            Argument::exact($buildData['number'])
+        )->willReturn($buildData);
+        $restApi->build()->willReturn($buildApi->reveal());
+        $restApiMock = $restApi->reveal();
+
+        $organization = new Organization($restApiMock, ['slug' => 'my-org']);
+
+        $build = new Build(
+            $restApiMock,
+            $organization,
+            $buildData
+        );
+        $build->rebuild();
+
+        $this->assertEquals($buildData['url'], $build->getUrl());
+    }
+
+    public function testGetAnnotations(): void
+    {
+        $orgSlug = 'my-org';
+        /** @var array $pipelineData */
+        $pipelineData = ['slug' => 'my-pipeline'];
+        $buildNumber = 31;
+
+        $expectedResult = [[]];
+
+        $restApi = $this->prophesize(RestApiInterface::class);
+        $annotationApi = $this->prophesize(AnnotationInterface::class);
+        $annotationApi->list(
+            Argument::exact($orgSlug),
+            Argument::exact($pipelineData['slug']),
+            Argument::exact($buildNumber),
+            Argument::type('array')
+        )->willReturn($expectedResult);
+        $restApi->annotation()->willReturn($annotationApi->reveal());
+        $restApiMock = $restApi->reveal();
+
+        $organization = new Organization($restApiMock, ['slug' => 'my-org']);
+
+        $build = new Build(
+            $restApiMock,
+            $organization,
+            ['number' => $buildNumber, 'pipeline' => $pipelineData]
+        );
+
+        $results = $build->getAnnotations();
+        $result = $results[0];
+        $this->assertInstanceOf(Annotation::class, $result);
+    }
+
+    public function testGetArtifacts(): void
+    {
+        $orgSlug = 'my-org';
+        /** @var array $pipelineData */
+        $pipelineData = ['slug' => 'my-pipeline'];
+        $buildNumber = 15;
+
+        $expectedResult = [
+            [
+                'id' => 'some-id',
+                'job_id' => 'some-job-id',
+            ]
+        ];
+
+        $restApi = $this->prophesize(RestApiInterface::class);
+        $annotationApi = $this->prophesize(ArtifactInterface::class);
+        $annotationApi->getByBuild(
+            Argument::exact($orgSlug),
+            Argument::exact($pipelineData['slug']),
+            Argument::exact($buildNumber),
+            Argument::type('array')
+        )->willReturn($expectedResult);
+        $restApi->artifact()->willReturn($annotationApi->reveal());
+        $restApiMock = $restApi->reveal();
+
+        $organization = new Organization($restApiMock, ['slug' => 'my-org']);
+
+        $build = new Build(
+            $restApiMock,
+            $organization,
+            ['number' => $buildNumber, 'pipeline' => $pipelineData]
+        );
+
+        $results = $build->getArtifacts();
+        $result = $results[0];
+        $this->assertInstanceOf(Artifact::class, $result);
     }
 }
