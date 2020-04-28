@@ -7,8 +7,6 @@ namespace bbaga\BuildkiteApi\Tests\Unit\Api;
 use bbaga\BuildkiteApi\Api\Rest\AnnotationInterface;
 use bbaga\BuildkiteApi\Api\Rest\ArtifactInterface;
 use bbaga\BuildkiteApi\Api\Rest\BuildInterface;
-use bbaga\BuildkiteApi\Api\Rest\Fluent\Annotation;
-use bbaga\BuildkiteApi\Api\Rest\Fluent\Artifact;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Build;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Organization;
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Pipeline;
@@ -203,8 +201,7 @@ final class BuildTest extends TestCase
         );
 
         $results = $build->getAnnotations();
-        $result = $results[0];
-        $this->assertInstanceOf(Annotation::class, $result);
+        $this->assertCount(1, $results);
     }
 
     public function testGetArtifacts(): void
@@ -241,7 +238,6 @@ final class BuildTest extends TestCase
         );
 
         $results = $build->getArtifacts();
-        $result = $results[0];
-        $this->assertInstanceOf(Artifact::class, $result);
+        $this->assertCount(1, $results);
     }
 }
