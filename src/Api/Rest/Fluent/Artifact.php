@@ -14,7 +14,7 @@ final class Artifact
      */
     private $api;
     /**
-     * @var Build
+     * @var BuildInterface
      */
     private $build;
 
@@ -73,7 +73,7 @@ final class Artifact
      */
     private $sha1sum;
 
-    public function __construct(RestApiInterface $api, Build $build, array $map = [])
+    public function __construct(RestApiInterface $api, BuildInterface $build, array $map = [])
     {
         $this->api = $api;
         $this->build = $build;
