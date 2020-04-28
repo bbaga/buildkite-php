@@ -8,7 +8,7 @@ use bbaga\BuildkiteApi\Api\RestApiInterface;
 use function is_array;
 use function is_int;
 
-final class Build
+final class Build implements BuildInterface
 {
     /**
      * @var RestApiInterface
@@ -373,7 +373,7 @@ final class Build
         return $artifacts;
     }
 
-    public function cancel(): self
+    public function cancel(): BuildInterface
     {
         $result = $this->api->build()->cancel(
             $this->getOrganizationSlug(),
@@ -386,7 +386,7 @@ final class Build
         return $this;
     }
 
-    public function rebuild(): self
+    public function rebuild(): BuildInterface
     {
         $result = $this->api->build()->rebuild(
             $this->getOrganizationSlug(),
@@ -399,7 +399,7 @@ final class Build
         return $this;
     }
 
-    public function fetch(): self
+    public function fetch(): BuildInterface
     {
         $response = $this->api->build()->get(
             $this->getOrganization()->getSlug(),
