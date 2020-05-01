@@ -68,13 +68,13 @@ jobs:
 
       - name: "Generate unit test coverage report"
         run: "vendor/bin/phpunit --testsuite unit --coverage-clover php-unit-coverage.xml"
+
+      - name: "Generate integration test coverage report"
+        run: "vendor/bin/phpunit --testsuite integration --coverage-clover php-integration-coverage.xml"
         env:
           BK_TEST_TOKEN: ${{ secrets.BK_TEST_TOKEN }}
           BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
           BK_TEST_PREFIX: ${{ secrets.BK_TEST_PREFIX }}
-
-      - name: "Generate integration test coverage report"
-        run: "vendor/bin/phpunit --testsuite integration --coverage-clover php-integration-coverage.xml"
 
       - uses: codecov/codecov-action@v1
         with:
