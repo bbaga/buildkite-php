@@ -73,9 +73,7 @@ final class BuildRelatedTest extends AbstractTestCase
                     [
                         'type' => 'manual',
                         'name' => 'Needs to be unblocked',
-                        'command' => 'echo "Hello" > artifact.txt \
-                            && buildkite-agent artifact upload artifact.txt \
-                            && cat artifact.txt | buildkite-agent annotate --style "success" --context "junit"',
+                        'command' => 'echo "Unblocked"',
                     ],
                 ]
             ]
