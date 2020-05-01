@@ -34,8 +34,8 @@ final class PipelineTest extends AbstractTestCase
         $pipelineApi = $this->api->pipeline();
 
         try {
-            $pipelineApi->get($this->organization, $this->pipelineName);
-            $pipelineApi->delete($this->organization, $this->pipelineName);
+            $pipelineApi->get($this->organizationSlug, $this->pipelineName);
+            $pipelineApi->delete($this->organizationSlug, $this->pipelineName);
         } catch (ClientException $e) {
             $response = $e->getResponse();
 
@@ -47,7 +47,7 @@ final class PipelineTest extends AbstractTestCase
         }
 
         $pipelineApi->create(
-            $this->organization,
+            $this->organizationSlug,
             [
                 'name' => $this->pipelineName,
                 'repository' => 'git@github.com:' . $repository . '.git',
@@ -63,7 +63,7 @@ final class PipelineTest extends AbstractTestCase
 
         try {
             $pipelineApi->update(
-                $this->organization,
+                $this->organizationSlug,
                 $this->pipelineName,
                 [
                     'steps' => [
@@ -84,11 +84,11 @@ final class PipelineTest extends AbstractTestCase
                 ]
             );
 
-            $pipelineApi->list($this->organization);
+            $pipelineApi->list($this->organizationSlug);
 
-            $pipelinesData = $pipelineApi->get($this->organization, $this->pipelineName);
+            $pipelinesData = $pipelineApi->get($this->organizationSlug, $this->pipelineName);
         } finally {
-            $pipelineApi->delete($this->organization, $this->pipelineName);
+            $pipelineApi->delete($this->organizationSlug, $this->pipelineName);
         }
 
         $this->assertIsArray($pipelinesData);
@@ -98,7 +98,7 @@ final class PipelineTest extends AbstractTestCase
         $this->assertCount(3, $steps);
 
         try {
-            $pipelineApi->get($this->organization, $this->pipelineName);
+            $pipelineApi->get($this->organizationSlug, $this->pipelineName);
         } catch (ClientException $e) {
             $response = $e->getResponse();
 

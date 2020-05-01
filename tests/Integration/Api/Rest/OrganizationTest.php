@@ -18,7 +18,7 @@ final class OrganizationTest extends AbstractTestCase
 
     public function testGet(): void
     {
-        $organizations = $this->api->organization()->get($this->organization);
+        $organizations = $this->api->organization()->get($this->organizationSlug);
 
         $this->assertNotEmpty($organizations);
     }

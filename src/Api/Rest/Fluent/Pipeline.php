@@ -431,9 +431,9 @@ final class Pipeline
         );
     }
 
-    public function fetch(string $slug = null): self
+    public function fetch(): self
     {
-        $response = $this->api->pipeline()->get($this->organization->getSlug(), $slug ?? $this->getSlug());
+        $response = $this->api->pipeline()->get($this->organization->getSlug(), $this->getSlug());
         $this->populate($response);
 
         return $this;

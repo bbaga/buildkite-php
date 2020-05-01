@@ -45,7 +45,7 @@ final class Job
         string $userId = null
     ): array {
         $uri = sprintf(
-            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/unlock',
+            'organizations/%s/pipelines/%s/builds/%d/jobs/%s/unblock',
             $organizationSlug,
             $pipelineSlug,
             $buildNumber,

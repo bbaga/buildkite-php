@@ -394,9 +394,7 @@ final class Build implements BuildInterface
             $this->getNumber()
         );
 
-        $this->populate($result);
-
-        return $this;
+        return new Build($this->api, $this->getOrganization(), $result);
     }
 
     public function fetch(): BuildInterface

@@ -72,43 +72,50 @@ final class RestApi implements RestApiInterface
     {
         $request = $this->client->createRequest('GET', sprintf('%s%s', $this->uri, $resource));
 
-        return $this->client->send($this->addAuthorizationHeader($request), $options);
+        return $this->client->send(
+            $this->addHeaders($request),
+            $options
+        );
     }
 
-    private function addAuthorizationHeader(RequestInterface $request): RequestInterface
+    private function addHeaders(RequestInterface $request): RequestInterface
     {
-        return $request->withHeader('Authorization', sprintf('Bearer %s', $this->accessToken));
+        return $request->withHeader('Authorization', sprintf('Bearer %s', $this->accessToken))
+            ->withHeader('Accept', 'application/json');
     }
 
     public function post(string $resource, array $body = []): ResponseInterface
     {
+        $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
         $request = $this->client->createRequest('POST', sprintf('%s%s', $this->uri, $resource))
-            ->withBody(stream_for(json_encode($body)));
+            ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addAuthorizationHeader($request));
+        return $this->client->send($this->addHeaders($request));
     }
 
     public function patch(string $resource, array $body = []): ResponseInterface
     {
+        $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
         $request = $this->client->createRequest('PATCH', sprintf('%s%s', $this->uri, $resource))
-            ->withBody(stream_for(json_encode($body)));
+            ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addAuthorizationHeader($request));
+        return $this->client->send($this->addHeaders($request));
     }
 
     public function put(string $resource, array $body = []): ResponseInterface
     {
+        $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
         $request = $this->client->createRequest('PUT', sprintf('%s%s', $this->uri, $resource))
-            ->withBody(stream_for(json_encode($body)));
+            ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addAuthorizationHeader($request));
+        return $this->client->send($this->addHeaders($request));
     }
 
     public function delete(string $resource): ResponseInterface
     {
         $request = $this->client->createRequest('DELETE', sprintf('%s%s', $this->uri, $resource));
 
-        return $this->client->send($this->addAuthorizationHeader($request));
+        return $this->client->send($this->addHeaders($request));
     }
 
     public function organization(): OrganizationInterface

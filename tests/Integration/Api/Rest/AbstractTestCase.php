@@ -23,7 +23,7 @@ abstract class AbstractTestCase extends TestCase
     /**
      * @var string
      */
-    protected $organization;
+    protected $organizationSlug;
 
     public function setUp(): void
     {
@@ -31,7 +31,7 @@ abstract class AbstractTestCase extends TestCase
 
         $token = (string) getenv('BK_TEST_TOKEN');
         $this->prefix = (string) getenv('BK_TEST_PREFIX');
-        $this->organization = (string) getenv('BK_TEST_ORG');
+        $this->organizationSlug = (string) getenv('BK_TEST_ORG');
         $this->api = new RestApi(new GuzzleClient(), $token);
     }
 

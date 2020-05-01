@@ -186,6 +186,8 @@ final class Artifact
             $this->jobId,
             $this->id
         );
+
+        $this->state = 'deleted';
     }
 
     private function populate(array $map): void
