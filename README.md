@@ -4,8 +4,6 @@
 ![](https://shepherd.dev/github/bbaga/buildkite-php/coverage.svg)
 ![](https://codecov.io/gh/bbaga/buildkite-php/branch/master/graph/badge.svg)
 
-**Documentations is work in progress.**
-
 ## Installation
 ```shell script
 composer require bbaga/buildkite-php
@@ -15,7 +13,8 @@ composer require bbaga/buildkite-php
 
 * [Interacting with Buildkite's REST API](#interacting-with-buildkites-rest-api)
   * [Example of traversing through resources](#example-of-traversing-through-resources)
-  * [Getting straight to the point](#getting-straight-to-the-point)
+  * [Accessing resources without traversing](#accessing-resources-without-traversing)
+  * [Creating a new pipeline](#Creating-a-new-pipeline)
 * [Direct API calls](#direct-api-calls)
   * [Organizations API](#organizations-api)
     * [List the ](#list-the-organizations)
@@ -94,7 +93,7 @@ $emojis = $organizations[0]->getEmojis();
 $agents = $organizations[0]->getAgents();
 ```
 
-#### Getting straight to the point
+#### Accessing resources without traversing
 
 Fetching data for a specific build without traversing through the hierarchy.
 
@@ -118,6 +117,50 @@ $pipeline = new Fluent\Pipeline($api, $organization, ['slug' => $pipelineSlug]);
 $build = new Fluent\Build($api, $organization, ['number' => $buildNumber, 'pipeline' => $pipeline]);
 
 $build->fetch()->getJobs();
+```
+
+#### Creating a new pipeline
+
+```php
+use bbaga\BuildkiteApi\Api\GuzzleClient;
+use bbaga\BuildkiteApi\Api\Rest\Fluent;
+use bbaga\BuildkiteApi\Api\RestApi;
+
+$client = new GuzzleClient();
+$api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
+
+$organization = new Fluent\Organization($api, ['slug' => 'my-org']);
+$pipeline = $organization->createPipeline(
+    [
+        'name' => 'my-pipeline',
+        'repository' => 'git@github.com:some/repo.git',
+        'steps' => [
+            [
+                'type' => 'script',
+                'name' => 'upload artifact',
+                'command' => 'echo "Hello" > artifact.txt \
+                 && buildkite-agent artifact upload artifact.txt \
+                 && cat artifact.txt | buildkite-agent annotate --style "success" --context "junit"',
+            ],
+            [
+                'type' => 'manual',
+                'name' => 'Needs to be unblocked',
+                'command' => 'echo "Unblocked!"',
+            ],
+        ]
+    ]
+);
+
+/**
+ * Pipeline is ready, we can kick off the first build
+ */
+$buildSettings = [
+    'commit' => 'HEAD',
+    'branch' => 'master',
+    'message' => 'Testing all the things :rocket:',
+];
+
+$pipeline->createBuild($buildSettings);
 ```
 
 ### Direct API calls
@@ -292,12 +335,13 @@ make test
 ```
 
 ### Integration testing
-A Buildkite account is required for integration testing and the following environment variables must be set.
+A Buildkite account and a running agent is required for integration testing and the following environment variables must be set.
 
 * `BK_TEST_TOKEN`
 * `BK_TEST_ORG`
 * `BK_TEST_PREFIX`
 * `GITHUB_REF`
+* `GITHUB_REPOSITORY`
 
 These can be set in the `phpunit.xml` by making a copy of `phpunit.xml.dist` and extending it with the following snippet
 ```xml
@@ -306,6 +350,7 @@ These can be set in the `phpunit.xml` by making a copy of `phpunit.xml.dist` and
         <env name="BK_TEST_ORG" value="my-organization-slug"/>
         <env name="BK_TEST_PREFIX" value="something-uniqe"/>
         <env name="GITHUB_REF" value="refs/heads/master"/>
+        <env name="GITHUB_REPOSITORY" value="your-name/buildkite-php"/>
     </php>
 ```
 
