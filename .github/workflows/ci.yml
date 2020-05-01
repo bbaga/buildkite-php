@@ -67,7 +67,10 @@ jobs:
         run: "composer install"
 
       - name: "Generate unit test coverage report"
-        run: "vendor/bin/phpunit --testsuite unit,integration --coverage-clover php-unit-coverage.xml"
+        run: "vendor/bin/phpunit --testsuite unit --coverage-clover php-unit-coverage.xml"
+
+      - name: "Generate integration test coverage report"
+        run: "vendor/bin/phpunit --testsuite integration --coverage-clover php-integration-coverage.xml"
         env:
           BK_TEST_TOKEN: ${{ secrets.BK_TEST_TOKEN }}
           BK_TEST_ORG: ${{ secrets.BK_TEST_ORG }}
@@ -77,7 +80,14 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./php-unit-coverage.xml # optional
-          flags: phpunit,unit,integration # optional
+          flags: phpunit,unit # optional
+          fail_ci_if_error: true # optional (default = false)
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          file: ./php-integration-coverage.xml # optional
+          flags: phpunit,integration # optional
           fail_ci_if_error: true # optional (default = false)
 
   phpunit-matrix:

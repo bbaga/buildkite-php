@@ -117,6 +117,35 @@ final class BuildRelatedTest extends AbstractTestCase
         $scriptJob = $jobs[0];
         $this->assertCount(1, $scriptJob->getArtifacts());
 
+        $scriptJob->getId();
+        $this->assertEquals('script', $scriptJob->getType());
+        $this->assertEquals('upload artifact', $scriptJob->getName());
+        $scriptJob->getStepKey();
+        $scriptJob->getAgentQueryRules();
+        $scriptJob->getBuildUrl();
+        $scriptJob->getWebUrl();
+        $scriptJob->getLogUrl();
+        $scriptJob->getRawLogUrl();
+        $scriptJob->getArtifactsUrl();
+        $scriptJob->getCommand();
+        $scriptJob->isSoftFailed();
+        $scriptJob->getExitStatus();
+        $scriptJob->getArtifactPaths();
+        $scriptJob->getAgent();
+        $scriptJob->getCreatedAt();
+        $scriptJob->getScheduledAt();
+        $scriptJob->getRunnableAt();
+        $scriptJob->getStartedAt();
+        $scriptJob->getFinishedAt();
+        $scriptJob->isRetried();
+        $scriptJob->getRetriedInJobId();
+        $scriptJob->getRetriesCount();
+        $scriptJob->getParallelGroupIndex();
+        $scriptJob->getParallelGroupTotal();
+        $scriptJob->getUnblockedBy();
+        $scriptJob->getUnblockedAt();
+        $scriptJob->isUnblockable();
+        $scriptJob->getUnblockUrl();
 
         /** @var array<string, string> $logOutput */
         $logOutput = $scriptJob->getLogOutput();
