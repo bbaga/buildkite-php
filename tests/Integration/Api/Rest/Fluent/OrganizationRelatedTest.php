@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace bbaga\BuildkiteApi\Tests\Integration\Api\Rest\Fluent;
 
 use bbaga\BuildkiteApi\Api\Rest\Fluent\Organization;
-use bbaga\BuildkiteApi\Api\Rest\Fluent\Pipeline;
 use bbaga\BuildkiteApi\Tests\Integration\Api\Rest\AbstractTestCase;
 
 final class OrganizationRelatedTest extends AbstractTestCase
