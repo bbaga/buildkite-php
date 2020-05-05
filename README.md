@@ -34,24 +34,40 @@ composer require bbaga/buildkite-php
     * [Cancel a running build](#cancel-a-running-build)
     * [Restarting a build](#restarting-a-build)
   * [Jobs API](#jobs-api)
+    * [Retry a job](#retry-a-job)
+    * [Unblock a job](#unblock-a-job)
+    * [Get logs for a job](#get-logs-for-a-job)
+    * [Delete logs of a job](#delete-logs-of-a-job)
+    * [Get the environment variables from a job](#get-the-environment-variables-from-a-job)
   * [Artifacts API](#artifacts-api)
+    * [Get artifacts uploaded from a build](#get-artifacts-uploaded-from-a-build)
+    * [Get artifacts uploaded from a job](#get-artifacts-uploaded-from-a-job)
+    * [Get a specific artifact](#get-a-specific-artifact)
+    * [Delete a specific artifact](#delete-a-specific-artifact)
   * [Agents API](#agents-api)
+    * [List agents for an organization](#list-agents-for-an-organization)
+    * [Get a specific agent](#get-a-specific-agent)
+    * [Stop an agent](#stop-an-agent)
   * [Annotations API](#annotations-api)
+    * [Get annotations uploaded by a build](#get-annotations-uploaded-by-a-build)
   * [Users API](#users-api)
+    * [Get current user](#get-current-user)
   * [Emojis API](#emojis-api)
+    * [List available emojis](#list-available-emojis)
 
 ### Setting up the RestApi object
 ```php
 use bbaga\BuildkiteApi\Api\RestApi;
 
-/** @var \BuildkiteApi\Api\HttpClientInterface $client */
+/** @var \bbaga\BuildkiteApi\Api\HttpClientInterface $client */
 $client = new MyHttpClient(); 
 
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
 
-`\BuildkiteApi\Api\HttpClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
-`\BuildkiteApi\Api\HttpClientInterface` is available in the [`bbaga/buildkite-php-http-interface`](https://github.com/bbaga/buildkite-php-http-interface) package.
+`\bbaga\\BuildkiteApi\Api\HttpClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
+
+`\bbaga\BuildkiteApi\Api\HttpClientInterface` is available in the [`bbaga/buildkite-php-http-interface`](https://github.com/bbaga/buildkite-php-http-interface) package.
 
 ### Interacting with Buildkite's REST API
 
@@ -296,11 +312,95 @@ Jobs related methods are exposed via `$api->job()`
 
 Detailed documentation for the Jobs API is available [here](https://buildkite.com/docs/apis/rest-api/jobs)
 
+#### Retry a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->retry('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Unblock a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->unblock('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get logs for a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->getLogOutput('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Delete logs of a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->deleteLogOutput('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get the environment variables from a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->getEnvironmentVariables('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
 ### Artifacts API
 
 Jobs related methods are exposed via `$api->artifact()`
 
 Detailed documentation for the Artifacts API is available [here](https://buildkite.com/docs/apis/rest-api/artifacts)
+
+#### Get artifacts uploaded from a build
+```php
+$buildNumber = 12;
+$api->artifact()->getByBuild('my-organization', 'my-pipeline', $buildNumber);
+```
+
+#### Get artifacts uploaded from a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->artifact()->getByJob('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get a specific artifact
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+$artifactId = '567038da5f03724b02a1cbf07a12fbcedfg';
+
+$api->artifact()->get(
+    'my-organization',
+    'my-pipeline',
+    $buildNumber,
+    $jobId,
+    $artifactId
+);
+```
+
+#### Delete a specific artifact
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+$artifactId = '567038da5f03724b02a1cbf07a12fbcedfg';
+
+$api->artifact()->delete(
+    'my-organization',
+    'my-pipeline',
+    $buildNumber,
+    $jobId,
+    $artifactId
+);
+```
 
 ### Agents API
 
@@ -308,11 +408,34 @@ Agents related methods are exposed via `$api->agent()`
 
 Detailed documentation for the Agents API is available [here](https://buildkite.com/docs/apis/rest-api/agents)
 
+#### List agents for an organization
+```php
+$api->agent()->list('my-organization');
+```
+
+#### Get a specific agent
+```php
+$agentId = '1d633306-de28-4944-ad84-fde0d50a6c9e';
+$api->agent()->list('my-organization', $agentId);
+```
+
+#### Stop an agent
+```php
+$agentId = '1d633306-de28-4944-ad84-fde0d50a6c9e';
+$api->agent()->list('my-organization', $agentId);
+```
+
 ### Annotations API
 
 Annotations related methods are exposed via `$api->annotation()`
 
 Detailed documentation for the Annotations API is available [here](https://buildkite.com/docs/apis/rest-api/annotations)
+
+#### Get annotations uploaded by a build
+```php
+$buildNumber = 12;
+$api->annotation()->list('my-organization', 'my-pipeline', $buildNumber);
+```
 
 ### Users API
 
@@ -320,11 +443,21 @@ Users related methods are exposed via `$api->user()`
 
 Detailed documentation for the Users API is available [here](https://buildkite.com/docs/apis/rest-api/users)
 
+#### Get current user
+```php
+$api->user()->whoami();
+```
+
 ### Emojis API
 
 Emojis related methods are exposed via `$api->emoji()`
 
 Detailed documentation for the Users API is available [here](https://buildkite.com/docs/apis/rest-api/emojis)
+
+#### List available emojis
+```php
+$api->emoji()->list('my-organization');
+```
 
 ## Contribution
 
