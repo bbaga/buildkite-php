@@ -296,11 +296,95 @@ Jobs related methods are exposed via `$api->job()`
 
 Detailed documentation for the Jobs API is available [here](https://buildkite.com/docs/apis/rest-api/jobs)
 
+#### Retry a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->retry('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Unblock a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->unblock('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get logs for a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->getLogOutput('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Delete logs of a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->deleteLogOutput('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get the environment variables from a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->job()->getEnvironmentVariables('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
 ### Artifacts API
 
 Jobs related methods are exposed via `$api->artifact()`
 
 Detailed documentation for the Artifacts API is available [here](https://buildkite.com/docs/apis/rest-api/artifacts)
+
+#### Get artifacts uploaded from a build
+```php
+$buildNumber = 12;
+$api->artifact()->getByBuild('my-organization', 'my-pipeline', $buildNumber);
+```
+
+#### Get artifacts uploaded from a job
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+
+$api->artifact()->getByJob('my-organization', 'my-pipeline', $buildNumber, $jobId);
+```
+
+#### Get a specific artifact
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+$artifactId = '567038da5f03724b02a1cbf07a12fbcedfg';
+
+$api->artifact()->get(
+    'my-organization',
+    'my-pipeline',
+    $buildNumber,
+    $jobId,
+    $artifactId
+);
+```
+
+#### Delete a specific artifact
+```php
+$buildNumber = 12;
+$jobId = '0738da5f-0372-4b02-a1cb-f07a12fbcdcd';
+$artifactId = '567038da5f03724b02a1cbf07a12fbcedfg';
+
+$api->artifact()->delete(
+    'my-organization',
+    'my-pipeline',
+    $buildNumber,
+    $jobId,
+    $artifactId
+);
+```
 
 ### Agents API
 
