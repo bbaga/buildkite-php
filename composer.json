@@ -18,7 +18,8 @@
   ],
   "require": {
     "ext-json": "*",
-    "bbaga/buildkite-php-http-interface": "^1.0"
+    "bbaga/buildkite-php-http-interface": "^1.0",
+    "guzzlehttp/psr7": "^1.6"
   },
   "autoload": {
     "psr-4": {
