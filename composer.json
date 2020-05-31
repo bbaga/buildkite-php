@@ -18,8 +18,9 @@
   ],
   "require": {
     "ext-json": "*",
-    "bbaga/buildkite-php-http-interface": "^1.0",
-    "guzzlehttp/psr7": "^1.6"
+    "bbaga/buildkite-php-http-interface": "2.0.x-dev",
+    "guzzlehttp/psr7": "^1.6",
+    "bbaga/buildkite-php-guzzle-client": "2.0.x-dev"
   },
   "autoload": {
     "psr-4": {
@@ -37,7 +38,6 @@
     "phpunit/phpunit": "^8.5",
     "vimeo/psalm": "^3.11",
     "psalm/plugin-phpunit": "^0.10.0",
-    "bbaga/buildkite-php-guzzle-client": "^1.0",
     "symplify/easy-coding-standard": "^7.2"
   },
   "scripts": {

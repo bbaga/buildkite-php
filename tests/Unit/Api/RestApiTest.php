@@ -37,19 +37,14 @@ final class RestApiTest extends TestCase
             new Request('GET', RestApi::BASE_URI . 'some/uri')
         );
 
-        $client->send(
-            Argument::type(RequestInterface::class),
-            Argument::type('array')
+        $client->sendRequest(
+            Argument::type(RequestInterface::class)
         )->will(function (array $args) use ($testCase, $token): ResponseInterface {
             /** @var RequestInterface $request */
             $request = $args[0];
-            /** @var array $options */
-            $options = $args[1];
             $authHeader = $request->getHeader('Authorization');
 
             $testCase->assertEquals($authHeader[0], sprintf('Bearer %s', $token), 'Auth header set');
-            $testCase->assertArrayHasKey('test', $options, 'Option key set');
-            $testCase->assertEquals('dummy', $options['test'], 'Option value set');
 
             $response = $testCase->prophesize(ResponseInterface::class);
             $response->withStatus()->willReturn(200);

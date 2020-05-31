@@ -167,6 +167,9 @@ final class BuildRelatedTest extends AbstractTestCase
         $this->assertCount(1, $artifacts);
         /** @var Artifact $artifact */
         $artifact = $artifacts[0];
+
+        $this->assertStringStartsWith('http', $artifact->getDownloadUrl());
+
         $artifact->delete();
         $this->assertEquals('deleted', $artifact->getState());
 

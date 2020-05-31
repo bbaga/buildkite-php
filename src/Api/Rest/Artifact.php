@@ -53,7 +53,7 @@ final class Artifact implements ArtifactInterface
             $jobId,
             $artifactId
         );
-        $response = $this->api->get($uri, ['allow_redirects' => false]);
+        $response = $this->api->get($uri);
 
         return $this->api->getResponseBody($response);
     }

@@ -70,11 +70,25 @@ final class RestApi implements RestApiInterface
 
     public function get(string $resource, array $options = []): ResponseInterface
     {
-        $request = $this->client->createRequest('GET', sprintf('%s%s', $this->uri, $resource));
+        $query = '';
 
-        return $this->client->send(
-            $this->addHeaders($request),
-            $options
+        if (isset($options['query'])) {
+            if (!\is_array($options['query'])) {
+                throw new \InvalidArgumentException('query must be an array');
+            }
+
+            $query = '?' . \http_build_query(
+                $options['query'],
+                '',
+                '&',
+                PHP_QUERY_RFC3986
+            );
+        }
+
+        $request = $this->client->createRequest('GET', sprintf('%s%s%s', $this->uri, $resource, $query));
+
+        return $this->client->sendRequest(
+            $this->addHeaders($request)
         );
     }
 
@@ -90,7 +104,7 @@ final class RestApi implements RestApiInterface
         $request = $this->client->createRequest('POST', sprintf('%s%s', $this->uri, $resource))
             ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addHeaders($request));
+        return $this->client->sendRequest($this->addHeaders($request));
     }
 
     public function patch(string $resource, array $body = []): ResponseInterface
@@ -99,7 +113,7 @@ final class RestApi implements RestApiInterface
         $request = $this->client->createRequest('PATCH', sprintf('%s%s', $this->uri, $resource))
             ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addHeaders($request));
+        return $this->client->sendRequest($this->addHeaders($request));
     }
 
     public function put(string $resource, array $body = []): ResponseInterface
@@ -108,14 +122,14 @@ final class RestApi implements RestApiInterface
         $request = $this->client->createRequest('PUT', sprintf('%s%s', $this->uri, $resource))
             ->withBody(stream_for(json_encode($body, $options)));
 
-        return $this->client->send($this->addHeaders($request));
+        return $this->client->sendRequest($this->addHeaders($request));
     }
 
     public function delete(string $resource): ResponseInterface
     {
         $request = $this->client->createRequest('DELETE', sprintf('%s%s', $this->uri, $resource));
 
-        return $this->client->send($this->addHeaders($request));
+        return $this->client->sendRequest($this->addHeaders($request));
     }
 
     public function organization(): OrganizationInterface
