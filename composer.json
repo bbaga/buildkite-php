@@ -18,9 +18,9 @@
   ],
   "require": {
     "ext-json": "*",
-    "bbaga/buildkite-php-http-interface": "2.0.x-dev",
     "guzzlehttp/psr7": "^1.6",
-    "bbaga/buildkite-php-guzzle-client": "2.0.x-dev"
+    "bbaga/buildkite-php-guzzle-client": "2.0.x-dev",
+    "psr/http-client": "^1.0"
   },
   "autoload": {
     "psr-4": {

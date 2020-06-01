@@ -20,6 +20,8 @@ use bbaga\BuildkiteApi\Api\Rest\OrganizationInterface;
 use bbaga\BuildkiteApi\Api\Rest\Pipeline;
 use bbaga\BuildkiteApi\Api\Rest\PipelineInterface;
 use bbaga\BuildkiteApi\Api\Rest\User;
+use GuzzleHttp\Psr7\Request;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Psr7\stream_for;
@@ -28,7 +30,7 @@ use function is_array;
 final class RestApi implements RestApiInterface
 {
     /**
-     * @var HttpClientInterface
+     * @var ClientInterface
      */
     private $client;
 
@@ -45,11 +47,11 @@ final class RestApi implements RestApiInterface
     public const BASE_URI = 'https://api.buildkite.com/v2/';
 
     /**
-     * @param HttpClientInterface $client
+     * @param ClientInterface $client
      * @param string $accessToken Buildkite API Access Token
      * @param string $uri Buildkite API uri
      */
-    public function __construct(HttpClientInterface $client, string $accessToken, string $uri = self::BASE_URI)
+    public function __construct(ClientInterface $client, string $accessToken, string $uri = self::BASE_URI)
     {
         $this->client = $client;
         $this->accessToken = $accessToken;
@@ -85,7 +87,7 @@ final class RestApi implements RestApiInterface
             );
         }
 
-        $request = $this->client->createRequest('GET', sprintf('%s%s%s', $this->uri, $resource, $query));
+        $request = new Request('GET', sprintf('%s%s%s', $this->uri, $resource, $query));
 
         return $this->client->sendRequest(
             $this->addHeaders($request)
@@ -101,7 +103,7 @@ final class RestApi implements RestApiInterface
     public function post(string $resource, array $body = []): ResponseInterface
     {
         $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
-        $request = $this->client->createRequest('POST', sprintf('%s%s', $this->uri, $resource))
+        $request = (new Request('POST', sprintf('%s%s', $this->uri, $resource)))
             ->withBody(stream_for(json_encode($body, $options)));
 
         return $this->client->sendRequest($this->addHeaders($request));
@@ -110,7 +112,7 @@ final class RestApi implements RestApiInterface
     public function patch(string $resource, array $body = []): ResponseInterface
     {
         $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
-        $request = $this->client->createRequest('PATCH', sprintf('%s%s', $this->uri, $resource))
+        $request = (new Request('PATCH', sprintf('%s%s', $this->uri, $resource)))
             ->withBody(stream_for(json_encode($body, $options)));
 
         return $this->client->sendRequest($this->addHeaders($request));
@@ -119,7 +121,7 @@ final class RestApi implements RestApiInterface
     public function put(string $resource, array $body = []): ResponseInterface
     {
         $options = count($body) === 0 ? JSON_FORCE_OBJECT : 0;
-        $request = $this->client->createRequest('PUT', sprintf('%s%s', $this->uri, $resource))
+        $request = (new Request('PUT', sprintf('%s%s', $this->uri, $resource)))
             ->withBody(stream_for(json_encode($body, $options)));
 
         return $this->client->sendRequest($this->addHeaders($request));
@@ -127,7 +129,7 @@ final class RestApi implements RestApiInterface
 
     public function delete(string $resource): ResponseInterface
     {
-        $request = $this->client->createRequest('DELETE', sprintf('%s%s', $this->uri, $resource));
+        $request = new Request('DELETE', sprintf('%s%s', $this->uri, $resource));
 
         return $this->client->sendRequest($this->addHeaders($request));
     }
