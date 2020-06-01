@@ -59,7 +59,7 @@ composer require bbaga/buildkite-php
 ```php
 use bbaga\BuildkiteApi\Api\RestApi;
 
-/** @var \bbaga\BuildkiteApi\Api\HttpClientInterface $client */
+/** @var \Psr\Http\Client\ClientInterface $client */
 $client = new MyHttpClient(); 
 
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
