@@ -38,7 +38,7 @@
     "vimeo/psalm": "^3.11",
     "psalm/plugin-phpunit": "^0.10.0",
     "symplify/easy-coding-standard": "^7.2",
-    "bbaga/buildkite-php-guzzle-client": "2.0-RC"
+    "bbaga/buildkite-php-guzzle-client": "^2.0"
   },
   "scripts": {
     "ecs-fix": {
