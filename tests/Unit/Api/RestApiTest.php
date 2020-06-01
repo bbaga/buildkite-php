@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace bbaga\BuildkiteApi\Tests\Unit\Api;
 
-use bbaga\BuildkiteApi\Api\HttpClientInterface;
 use bbaga\BuildkiteApi\Api\RestApi;
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,7 +18,7 @@ final class RestApiTest extends TestCase
 {
     public function testGetResponseBody(): void
     {
-        $client = $this->prophesize(HttpClientInterface::class)->reveal();
+        $client = $this->prophesize(ClientInterface::class)->reveal();
         $api = new RestApi($client, 'token');
         $response = $this->prophesize(ResponseInterface::class);
         $response->getBody()->willReturn('{"foo": "bar"}');
@@ -32,24 +31,16 @@ final class RestApiTest extends TestCase
         $testCase = $this;
         $token = 'my-token';
 
-        $client = $this->prophesize(HttpClientInterface::class);
-        $client->createRequest('GET', RestApi::BASE_URI . 'some/uri')->willReturn(
-            new Request('GET', RestApi::BASE_URI . 'some/uri')
-        );
+        $client = $this->prophesize(ClientInterface::class);
 
-        $client->send(
-            Argument::type(RequestInterface::class),
-            Argument::type('array')
+        $client->sendRequest(
+            Argument::type(RequestInterface::class)
         )->will(function (array $args) use ($testCase, $token): ResponseInterface {
             /** @var RequestInterface $request */
             $request = $args[0];
-            /** @var array $options */
-            $options = $args[1];
             $authHeader = $request->getHeader('Authorization');
 
             $testCase->assertEquals($authHeader[0], sprintf('Bearer %s', $token), 'Auth header set');
-            $testCase->assertArrayHasKey('test', $options, 'Option key set');
-            $testCase->assertEquals('dummy', $options['test'], 'Option value set');
 
             $response = $testCase->prophesize(ResponseInterface::class);
             $response->withStatus()->willReturn(200);
