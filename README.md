@@ -10,11 +10,14 @@ composer require bbaga/buildkite-php
 ```
 
 ## Usage
+* [Setting up the API objects](#setting-up-the-api-objects)
+  * [REST API](#rest-api)
+  * [GraphQL API](#graphql-api)
 * [Interacting with Buildkite's GraphQL API](#interacting-with-buildkites-graphql-api)
 * [Interacting with Buildkite's REST API](#interacting-with-buildkites-rest-api)
   * [Example of traversing through resources](#example-of-traversing-through-resources)
   * [Accessing resources without traversing](#accessing-resources-without-traversing)
-  * [Creating a new pipeline](#Creating-a-new-pipeline)
+  * [Creating a new pipeline](#creating-a-new-pipeline)
 * [Direct API calls](#direct-api-calls)
   * [Organizations API](#organizations-api)
     * [List the ](#list-the-organizations)
@@ -55,7 +58,7 @@ composer require bbaga/buildkite-php
   * [Emojis API](#emojis-api)
     * [List available emojis](#list-available-emojis)
 
-### Setting up the Api objects
+### Setting up the API objects
 
 `\Psr\Http\Client\ClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
 
