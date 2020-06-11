@@ -72,7 +72,7 @@ $client = new MyHttpClient();
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
 
-### GraphQL Api
+### GraphQL API
 ```php
 use bbaga\BuildkiteApi\Api\GraphQLApi;
 
