@@ -10,7 +10,7 @@ composer require bbaga/buildkite-php
 ```
 
 ## Usage
-
+* [Interacting with Buildkite's GraphQL API](#interacting-with-buildkites-graphql-api)
 * [Interacting with Buildkite's REST API](#interacting-with-buildkites-rest-api)
   * [Example of traversing through resources](#example-of-traversing-through-resources)
   * [Accessing resources without traversing](#accessing-resources-without-traversing)
@@ -55,7 +55,11 @@ composer require bbaga/buildkite-php
   * [Emojis API](#emojis-api)
     * [List available emojis](#list-available-emojis)
 
-### Setting up the RestApi object
+### Setting up the Api objects
+
+`\Psr\Http\Client\ClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
+
+#### Rest API
 ```php
 use bbaga\BuildkiteApi\Api\RestApi;
 
@@ -65,7 +69,44 @@ $client = new MyHttpClient();
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
 
-`\Psr\Http\Client\ClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
+### GraphQL Api
+```php
+use bbaga\BuildkiteApi\Api\GraphQLApi;
+
+/** @var \Psr\Http\Client\ClientInterface $client */
+$client = new MyHttpClient(); 
+
+$api = new GraphQLApi($client, 'MY_BUILDKITE_API_TOKEN');
+```
+
+### Interacting with Buildkite's GraphQL API
+```php
+use bbaga\BuildkiteApi\Api\GraphQLApi;
+use bbaga\BuildkiteApi\Api\GuzzleClient;
+
+$query = '
+    query example($slug: ID!, $first: Int){
+        viewer { user { name } }
+        
+        organization(slug: $slug) {
+            pipelines(first: $first) {
+                edges {
+                    node {
+                        id
+                        slug
+                    }
+                }
+            }
+        } 
+    }';
+
+$variables = json_encode(['slug' => 'my-org', 'first' => 5]);
+
+$client = new GuzzleClient();
+$api = new GraphQLApi($client, 'MY_BUILDKITE_API_TOKEN');
+
+$api->getResponseBody($api->post($query, $variables));
+```
 
 ### Interacting with Buildkite's REST API
 
