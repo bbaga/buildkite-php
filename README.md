@@ -60,14 +60,14 @@ composer require bbaga/buildkite-php
 
 ### Setting up the API objects
 
-`\Psr\Http\Client\ClientInterface` implementation is available in the [`bbaga/buildkite-php-guzzle-client`](https://github.com/bbaga/buildkite-php-guzzle-client) package.
+`\GuzzleHttp\Client()` is available in the `guzzlehttp/guzzle` package
 
 #### Rest API
 ```php
 use bbaga\BuildkiteApi\Api\RestApi;
 
 /** @var \Psr\Http\Client\ClientInterface $client */
-$client = new MyHttpClient(); 
+$client = new \GuzzleHttp\Client(); 
 
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
@@ -77,7 +77,7 @@ $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 use bbaga\BuildkiteApi\Api\GraphQLApi;
 
 /** @var \Psr\Http\Client\ClientInterface $client */
-$client = new MyHttpClient(); 
+$client = new \GuzzleHttp\Client();
 
 $api = new GraphQLApi($client, 'MY_BUILDKITE_API_TOKEN');
 ```
@@ -85,7 +85,6 @@ $api = new GraphQLApi($client, 'MY_BUILDKITE_API_TOKEN');
 ### Interacting with Buildkite's GraphQL API
 ```php
 use bbaga\BuildkiteApi\Api\GraphQLApi;
-use bbaga\BuildkiteApi\Api\GuzzleClient;
 
 $query = '
     query example($slug: ID!, $first: Int){
@@ -105,7 +104,7 @@ $query = '
 
 $variables = json_encode(['slug' => 'my-org', 'first' => 5]);
 
-$client = new GuzzleClient();
+$client  = new \GuzzleHttp\Client();
 $api = new GraphQLApi($client, 'MY_BUILDKITE_API_TOKEN');
 
 $api->getResponseBody($api->post($query, $variables));
@@ -115,11 +114,10 @@ $api->getResponseBody($api->post($query, $variables));
 
 #### Example of traversing through resources
 ```php
-use bbaga\BuildkiteApi\Api\GuzzleClient;
 use bbaga\BuildkiteApi\Api\Rest\Fluent;
 use bbaga\BuildkiteApi\Api\RestApi;
 
-$client = new GuzzleClient();
+$client = new \GuzzleHttp\Client();
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 
 /** Getting all the organizations that are visible with the TOKEN */
@@ -156,11 +154,10 @@ $agents = $organizations[0]->getAgents();
 Fetching data for a specific build without traversing through the hierarchy.
 
 ```php
-use bbaga\BuildkiteApi\Api\GuzzleClient;
 use bbaga\BuildkiteApi\Api\Rest\Fluent;
 use bbaga\BuildkiteApi\Api\RestApi;
 
-$client = new GuzzleClient();
+$client = new \GuzzleHttp\Client();
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 
 /**
@@ -180,11 +177,10 @@ $build->fetch()->getJobs();
 #### Creating a new pipeline
 
 ```php
-use bbaga\BuildkiteApi\Api\GuzzleClient;
 use bbaga\BuildkiteApi\Api\Rest\Fluent;
 use bbaga\BuildkiteApi\Api\RestApi;
 
-$client = new GuzzleClient();
+$client = new \GuzzleHttp\Client();
 $api = new RestApi($client, 'MY_BUILDKITE_API_TOKEN');
 
 $organization = new Fluent\Organization($api, ['slug' => 'my-org']);
