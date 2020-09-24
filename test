@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+RESULT=$(curl -X POST "https://api.buildkite.com/v2/organizations/${ORG_SLUG}/pipelines" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -d '{
+    "name": "My Pipeline",
+    "repository": "git@github.com:acme-inc/my-pipeline.git",
+    "steps": [
+      {
+        "type": "script",
+        "name": "Test :package:",
+        "command": "script/Test.sh"
+      },
+      {
+        "type": "waiter"
+      },
+      {
+        "type": "script",
+        "name": "Test :package:",
+        "command": "script/Test.sh"
+      }
+    ]
+  }')
+
+PIPELINE_SLUG=$(echo $RESULT | jq '.slug' -r)
+
+curl -X POST "https://api.buildkite.com/v2/organizations/${ORG_SLUG}/pipelines/${PIPELINE_SLUG}/builds" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -d '{
+    "commit": "abcd0b72a1e580e90712cdd9eb26d3fb41cd09c8",
+    "branch": "master",
+    "message": "Testing all the things :rocket:",
+    "author": {
+      "name": "Keith Pitt",
+      "email": "me@keithpitt.com"
+    },
+    "env": {
+      "MY_ENV_VAR": "some_value"
+    },
+    "meta_data": {
+      "some build data": "value",
+      "other build data": true
+    }
+  }'
+
+curl -X DELETE "https://api.buildkite.com/v2/organizations/${ORG_SLUG}/pipelines/${PIPELINE_SLUG}" \
+  -H "Authorization: Bearer ${TOKEN}"

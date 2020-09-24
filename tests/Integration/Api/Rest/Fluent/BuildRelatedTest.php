@@ -98,7 +98,7 @@ final class BuildRelatedTest extends AbstractTestCase
 
         $timeoutCounter = 0;
         do {
-            if (++$timeoutCounter > 120) {
+            if ($timeoutCounter++ > 120) {
                 throw new \RuntimeException('Build did not finish in time');
             }
 

@@ -38,7 +38,7 @@
     "vimeo/psalm": "^3.11",
     "psalm/plugin-phpunit": "^0.10.0",
     "symplify/easy-coding-standard": "^7.2",
-    "bbaga/buildkite-php-guzzle-client": "^2.0"
+    "guzzlehttp/guzzle": "^7.1"
   },
   "scripts": {
     "ecs-fix": {
@@ -54,6 +54,6 @@
     }
   },
   "suggest": {
-    "bbaga/buildkite-php-guzzle-client": "Provides basic, off the shelf http client implementation"
+    "guzzlehttp/guzzle": "Provides PSR-18 HTTP Client implementation"
   }
 }
